@@ -1,0 +1,41 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Buffers", "Buffers\Buffers.vcxproj", "{56F11D4B-C65F-49FE-9A25-3C5F465BBDED}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DebugForDLL", "DebugForDLL\DebugForDLL.vcxproj", "{BE139BC1-06E1-4246-8E27-780694C39589}"
+	ProjectSection(ProjectDependencies) = postProject
+		{56F11D4B-C65F-49FE-9A25-3C5F465BBDED} = {56F11D4B-C65F-49FE-9A25-3C5F465BBDED}
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(TeamFoundationVersionControl) = preSolution
+		SccNumberOfProjects = 3
+		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+		SccTeamFoundationServer = http://xback-pc:6667/tfs/dlls
+		SccLocalPath0 = .
+		SccProjectUniqueName1 = Buffers\\Buffers.vcxproj
+		SccProjectName1 = Buffers
+		SccLocalPath1 = Buffers
+		SccProjectUniqueName2 = DebugForDLL\\DebugForDLL.vcxproj
+		SccProjectName2 = DebugForDLL
+		SccLocalPath2 = DebugForDLL
+	EndGlobalSection
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{56F11D4B-C65F-49FE-9A25-3C5F465BBDED}.Debug|Win32.ActiveCfg = Debug|Win32
+		{56F11D4B-C65F-49FE-9A25-3C5F465BBDED}.Debug|Win32.Build.0 = Debug|Win32
+		{56F11D4B-C65F-49FE-9A25-3C5F465BBDED}.Release|Win32.ActiveCfg = Release|Win32
+		{56F11D4B-C65F-49FE-9A25-3C5F465BBDED}.Release|Win32.Build.0 = Release|Win32
+		{BE139BC1-06E1-4246-8E27-780694C39589}.Debug|Win32.ActiveCfg = Debug|Win32
+		{BE139BC1-06E1-4246-8E27-780694C39589}.Debug|Win32.Build.0 = Debug|Win32
+		{BE139BC1-06E1-4246-8E27-780694C39589}.Release|Win32.ActiveCfg = Release|Win32
+		{BE139BC1-06E1-4246-8E27-780694C39589}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
