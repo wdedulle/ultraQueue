@@ -185,8 +185,8 @@ namespace DebugForDLL {
 	unsigned int t;
 
 	int test=0;
-	char aa[24];
-	char bb[24];
+	unsigned char aa[24];
+	unsigned char bb[24];
 	double space_used_channel_1 = 0;
 	double space_used_channel_2 = 0;
 	double space_free_channel_1 = 0;
@@ -198,7 +198,7 @@ namespace DebugForDLL {
 	{
 		memset (aa,0,sizeof aa);
 		memset (bb,0,sizeof bb);
-		strcpy(aa,"abcdefghijklmnopqrs");
+		//strcpy(aa,"abcdefghijklmnopqrs");
 
 		test = BufferWrite(t,10,aa);	//BufferWrite (unsigned int buffer_nr, unsigned int NrOfBytes, char * Data);
 		test = BufferRead(t,0,5,bb);		//BUFFERS_API int CALLING_CONVENTION BufferRead (unsigned int buffer_nr, unsigned short ReadChannel, unsigned int NrOfBytes, char * Data);
@@ -227,32 +227,109 @@ namespace DebugForDLL {
 private: System::Void button4_Click(System::Object^  sender, System::EventArgs^  e) {
 
 		unsigned int v =0;
-		char a[65536];
-		char b[32768];
+		unsigned char a[65536];
+		unsigned char b = 0x41;
+
+
 		int test=0;
 		DWORD tstart, tend, tdif;
 		
-		v = BufferCreate(1048576*64,0,1);	// function(size,buffertype,ReadChannels)
+		for (unsigned int i1=0;i1<sizeof a;i1++)
+		{
+			a[i1] = b;
+			b++;
+			if (b == 0x5b) b=0x41;
+		}
 
-		
+		v = BufferCreate(512*1048576,0,1);	// function(size,buffertype,ReadChannels)
+
 
 tstart = GetTickCount();	// Get begintime
 
-		for (int i=128*1024;i!=0;i--)
-		{
-		
+	for (unsigned int i=0;i<32768*16;i++)
+	{
 		test = BufferWrite(v,sizeof a,a);	//BufferWrite (unsigned int buffer_nr, unsigned int NrOfBytes, char * Data);
-		test = BufferRead(v,0,sizeof b,b);		//BUFFERS_API int CALLING_CONVENTION BufferRead (unsigned int buffer_nr, unsigned short ReadChannel, unsigned int NrOfBytes, char * Data);
-
+		if (test !=0)
+		{
+			break;
 		}
-
-		BufferRelease(v);
+	}
 
 tend = GetTickCount();	// Get end time
 
 tdif = tend - tstart; //will now have the time elapsed since the start of the call	(performance measurement
 
-//58641
+double gh = ((double)32768/(double)tdif)*1000;
+
+tstart = GetTickCount();	// Get begintime
+
+// Original Writespeeds	(single ptr)
+//64k : 341	-> 12073 (4 ptrs : 107)
+//32k : 341 -> 11409
+//16k : 338 -> 10502
+// 8k : 339
+// 4k : 336
+// 2k : 325
+// 1k : 313	(4 ptrs : 104)
+// 512 : 288 -> 1381
+// 256 : 248
+// 128 : 213
+// 64 : 124 -> 238
+// 32 : 90
+// 16 : 53
+// 8 : 34->33 (4 ptrs : 24)
+// 4 : 12->14
+// 2 :7,5 	(4 ptrs : 7,8)
+// 1 :4,7
+
+//Read
+
+
+
+//1st = 5
+// last in row = N
+
+unsigned char a1[20] = {0};
+
+unsigned int count = 0;
+
+test = BufferSpaceUsed(v,0);
+test /= 1048576;
+//for (unsigned int t=0;t<1024*524288;t++)
+//{
+		test = BufferRead(v,0,16,a1);		//BUFFERS_API int CALLING_CONVENTION BufferRead (unsigned int buffer_nr, unsigned short ReadChannel, unsigned int NrOfBytes, char * Data);
+
+//}
+
+test = BufferSpaceUsed(v,0);
+
+tend = GetTickCount();	// Get end time
+
+tdif = tend - tstart; //will now have the time elapsed since the start of the call	(performance measurement
+
+double ij = ((double)1024/(double)tdif)*1000;
+
+// DEBUG
+//126080
+
+// RELEASE	(speed in MB/s)
+//Write
+//156	original code
+//178
+//189
+//266
+//295
+
+//Read : 605
+
+double WriteSpeed = gh;
+double ReadSpeed = ij;
+
+// Byte-Byte
+// 7,3
+// BlockWrite
+// 8,41
+BufferRelease(v);
 
 textBox1->Text = "done";
 

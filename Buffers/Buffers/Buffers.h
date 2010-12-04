@@ -13,6 +13,7 @@
 #define BUFFERS_API __declspec(dllimport)
 #endif
 
+//#define CALLING_CONVENTION __fastcall
 #define CALLING_CONVENTION __stdcall
 //#define CALLING_CONVENTION __cdecl
 #ifdef __cplusplus
