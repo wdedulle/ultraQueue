@@ -1,7 +1,9 @@
-// Koen Vandeputte
-// C++ Learning
+// Koen Vandeputte (xback)
 // FIFO / RING buffer DLL
 // MultiThreading supported
+
+#define FIFO 0	// With a FIFO, when the buffer is full, writing are accepted, overwriting the oldest data first
+#define RING 1	// With a RING, when the buffer is full, writes are denied, space must become available again first
 
 #if !defined(BUFFERS_H_INCLUDED)
 #define BUFFERS_H_INCLUDED
@@ -13,9 +15,8 @@
 #define BUFFERS_API __declspec(dllimport)
 #endif
 
-//#define CALLING_CONVENTION __fastcall
 #define CALLING_CONVENTION __stdcall
-//#define CALLING_CONVENTION __cdecl
+
 #ifdef __cplusplus
 extern "C"{
 #endif
@@ -24,16 +25,16 @@ extern "C"{
 BUFFERS_API unsigned int CALLING_CONVENTION BufferCreate (unsigned int size,unsigned int buffertype, unsigned int NrReadChannels);
 	//Create a new Buffer
 	// Parameters :
-	//		- Size of the buffer in bytes (max 256MB ; min 16B)
+	//		- Size of the buffer in bytes (max 512MB ; min 16B)
 	//		- Type of buffer : 0 = FIFO	; 1 = RING
-	//		- Amount of ReadChannel wanted. (Max = 4;  Giving higher values will set it to the maximum)
+	//		- Amount of ReadChannel wanted. (Max = 32;  Giving higher values will set it to the maximum)
 	// Return : 
-	//		- 0 : Unknown buffertype
+	//		- 0 : Unknown buffertype / A minimum of 1 ReadChannel should be requested
 	//		- >0 : Buffer ID
 
 // Additional info :
 	// With a FIFO, when the buffer is full, writes are accepted, overwriting the oldest data first
-	// With a RING, when the buffer is full (any of the ReadChannels), writes are denied, space must become available again first
+	// With a RING, when the buffer is full (one of the ReadChannels), writes are denied, space must become available again first
 
 
 BUFFERS_API void CALLING_CONVENTION BufferRelease(unsigned int buffer_nr);
@@ -77,7 +78,7 @@ BUFFERS_API unsigned int CALLING_CONVENTION BufferSpaceAvailable (unsigned int b
 	// Parameters :
 	//		- Buffer ID
 	// Return : status
-	//		- -1	: Invalid ReadChannel
+	//		- 0	: No Bytes Available in this Queue/ReadChannel.  0 is also returned when Buffer or ReadChannel does not exist
 	//		- FIFO	: Available space (in bytes) before data will be overwritten for this ReadChannel
 	//		- RING	: Available space before write actions will be blocked due to this ReadChannel
 
@@ -95,7 +96,7 @@ BUFFERS_API unsigned int CALLING_CONVENTION BufferSpaceUsed (unsigned int buffer
 	// Parameters :
 	//		- Buffer ID
 	// Return : status
-	//		- Amount of used space (in bytes)
+	//		- Amount of used space (in bytes)	0 is also returned when Buffer or ReadChannel does not exist
 
 BUFFERS_API double CALLING_CONVENTION BufferSpaceUsed_Percentage (unsigned int buffer_nr, unsigned int ReadChannel);
 	//Request amount of Space used

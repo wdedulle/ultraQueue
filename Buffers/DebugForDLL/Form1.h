@@ -241,7 +241,7 @@ private: System::Void button4_Click(System::Object^  sender, System::EventArgs^ 
 			if (b == 0x5b) b=0x41;
 		}
 
-		v = BufferCreate(512*1048576,0,1);	// function(size,buffertype,ReadChannels)
+		v = BufferCreate(512*1048576,FIFO,1);	// function(size,buffertype,ReadChannels)
 
 
 tstart = GetTickCount();	// Get begintime

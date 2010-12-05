@@ -112,7 +112,7 @@ unsigned int Buffers::QFree(unsigned int NrPtr)
 {
 	unsigned int k=0;
 
-	if (NrPtr >= this->NrPtrs) return -1;	// Invalid pointer
+	if (NrPtr >= this->NrPtrs) return 0;	// Invalid pointer
 
 	EnterCriticalSection(&Crit1);
 	k= (this->size - this->QLoad[NrPtr]); // k is needed to give the function a chance to release the lock first before returning
@@ -125,7 +125,7 @@ unsigned int Buffers::QLoaded(unsigned int NrPtr)
 {
 	unsigned int k=0;
 
-	if (NrPtr >= this->NrPtrs) return -1;	// Invalid pointer
+	if (NrPtr >= this->NrPtrs) return 0;	// Invalid pointer
 
 	EnterCriticalSection(&Crit1);
 	k = this->QLoad[NrPtr];	
@@ -380,6 +380,7 @@ unsigned int CALLING_CONVENTION BufferCreate (unsigned int size, unsigned int bu
 	if (size < MINSIZE) size = MINSIZE;	// Buffer Minimum Capacity
 
 	if (buffertype > 1) return 0;	// Unknown Buffertype
+	if (!NrReadChannels) return 0;	// ReadChannels must be at least 1
 	Buffers * NewBuffer = new Buffers(NrReadChannels, size, buffertype);
 	i = (unsigned int) NewBuffer;
 	return i;
