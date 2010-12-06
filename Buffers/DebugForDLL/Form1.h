@@ -229,7 +229,7 @@ private: System::Void button4_Click(System::Object^  sender, System::EventArgs^ 
 		unsigned int v =0;
 		unsigned char a[65536];
 		unsigned char b = 0x41;
-
+		unsigned char aa[24] = {0};
 
 		int test=0;
 		DWORD tstart, tend, tdif;
@@ -241,19 +241,17 @@ private: System::Void button4_Click(System::Object^  sender, System::EventArgs^ 
 			if (b == 0x5b) b=0x41;
 		}
 
-		v = BufferCreate(512*1048576,FIFO,1);	// function(size,buffertype,ReadChannels)
+		v = BufferCreate(16,RING,2);	// function(size,buffertype,ReadChannels)
 
 
 tstart = GetTickCount();	// Get begintime
 
-	for (unsigned int i=0;i<32768*16;i++)
-	{
-		test = BufferWrite(v,sizeof a,a);	//BufferWrite (unsigned int buffer_nr, unsigned int NrOfBytes, char * Data);
-		if (test !=0)
-		{
-			break;
-		}
-	}
+		test = BufferWrite(v,15,a);	//BufferWrite (unsigned int buffer_nr, unsigned int NrOfBytes, char * Data);
+		test = BufferRead(v,0,4,aa);		//BUFFERS_API int CALLING_CONVENTION BufferRead (unsigned int buffer_nr, unsigned short ReadChannel, unsigned int NrOfBytes, char * Data);
+		test = BufferSpaceUsed(v,0);
+		test = BufferSpaceUsed(v,1);
+
+		test = BufferWrite(v,5,a);	//BufferWrite (unsigned int buffer_nr, unsigned int NrOfBytes, char * Data);
 
 tend = GetTickCount();	// Get end time
 

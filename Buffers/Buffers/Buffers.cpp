@@ -277,25 +277,9 @@ int Buffers::Write (unsigned int w, unsigned char * d)
 				}
 		}
 
-		for (register unsigned int i=0;i<w;i++) // Store counter in Cache if possible
-		{
-			temp_WrPtr++;
-			if (temp_WrPtr == temp_size) temp_WrPtr = 0;	//Make it circular
-			this->CQ[temp_WrPtr] = d[i];
-
-			for (register unsigned int j=0;j<this->NrPtrs;j++)
-			{
-				temp_QLoad[j]++;
-			}
-		}
-	}
-
-	else	//FIFO
-
-	{
-	unsigned int block;
-	unsigned int offset=0;
-	unsigned int w2 = w;	// Keep a copy of written bytes to update Read pointer(s) & Load(s)
+		unsigned int block;
+		unsigned int offset=0;
+		unsigned int w2 = w;	// Keep a copy of written bytes to update Read pointer(s) & Load(s)
 
 		while (w)
 		{
@@ -325,22 +309,65 @@ int Buffers::Write (unsigned int w, unsigned char * d)
 				offset = block;	// offset = position to start for the Wrap write
 			}
 		}
-		//Update Loads & pointers
+		//Update Loads
 		for (unsigned int q=0;q<temp_NrPtrs;q++)
 		{
 			temp_QLoad[q] += (w2-w);	//Update loads
-
-			if (temp_QLoad[q] >= temp_size)	// Load is larger than queue size
-			{
-				temp_QLoad[q] = temp_size; // Max. possible amount is queue size
-				temp_RdPtr[q] = temp_WrPtr; // Pointers are equal when buffer is full
-			}
-			else	// Load is within Queue limits
-			{
-				temp_RdPtr[q] = temp_WrPtr - temp_QLoad[q];
-				if (temp_RdPtr[q] > temp_size) temp_RdPtr[q] = temp_size - (temp_size - temp_RdPtr[q]);
-			}
 		}
+
+	}
+
+	else	//FIFO
+
+	{
+		unsigned int block;
+		unsigned int offset=0;
+		unsigned int w2 = w;	// Keep a copy of written bytes to update Read pointer(s) & Load(s)
+
+			while (w)
+			{
+				block = temp_size - (temp_WrPtr+1);	// Get distance to Wrap point
+
+				if (w <= BLOCKSIZE_WRITE || block <= BLOCKSIZE_WRITE)	// Byte-by-Byte Read
+				{	// When not much data to write, or we're close at the wrap point, write byte-per-byte
+					unsigned int Small = w;
+
+					if (offset && (block != 0)) Small = block;	//"offset" lets us know that a blockwrite was unfinished due to lack of seq. space
+					if ((block == 0) && (Small > BLOCKSIZE_WRITE)) Small = 1;	// Write 1 byte to wrap and return to block writing if a lot of data is still coming
+
+					for (register unsigned int i=0;i<Small;i++)	// Store counter in Cache if possible
+					{
+						temp_WrPtr++;
+						if (temp_WrPtr == temp_size) temp_WrPtr = 0;	// inc + compare&set is 40% faster than modulus trick
+						this->CQ[temp_WrPtr] = d[i+offset];
+						w--;
+					}
+				}
+				else	// Block Write		Max block write = size of requested bytes (if possible)
+				{
+					if (block > w) block = w;	// If more sequential space is available than requested amount, write requested amount (otherwise we have a memory (& pointer) overflow
+					memcpy(&this->CQ[temp_WrPtr+1],d,block);
+					temp_WrPtr += block;
+					w -= block;	// Decrease nr of BytesToWrite
+					offset = block;	// offset = position to start for the Wrap write
+				}
+			}
+			//Update Loads & pointers
+			for (unsigned int q=0;q<temp_NrPtrs;q++)
+			{
+				temp_QLoad[q] += (w2-w);	//Update loads
+
+				if (temp_QLoad[q] >= temp_size)	// Load is larger than queue size
+				{
+					temp_QLoad[q] = temp_size; // Max. possible amount is queue size
+					temp_RdPtr[q] = temp_WrPtr; // Pointers are equal when buffer is full
+				}
+				else	// Load is within Queue limits
+				{
+					temp_RdPtr[q] = temp_WrPtr - temp_QLoad[q];
+					if (temp_RdPtr[q] > temp_size) temp_RdPtr[q] = temp_size - (temp_size - temp_RdPtr[q]);
+				}
+			}
 	}
 
 	// Write back changed value's
