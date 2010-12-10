@@ -2,7 +2,7 @@ Ultraqueue 0.6 Example :
 
 #include "Buffers.h"
 
-int main ();
+int main ()
 {
 
 	unsigned int Buffer1 = 0;
@@ -50,6 +50,12 @@ int main ();
 	// Check capacity in % (usefull for UI display)
 	UsedSpace = BufferSpaceUsed_Percentage(Buffer1, 0);	// read amount of occupied space in %	(0,0045% in this example)
 	UsedSpace = BufferSpaceUsed_Percentage(Buffer1, 1);	// read amount of occupied space in %	(0,0061% in this example)
+
+	//Clear Buffers
+	BufferFlush(Buffer1,-1);	//Clear Buffer 1 - All Channels
+	BufferFlush(Buffer2,0);		//Clear Buffer 2 - Channel 0
+	
+	//note: It is not needed to clear buffers before Deleting them
 
 
 	// Delete Buffers before closing the application

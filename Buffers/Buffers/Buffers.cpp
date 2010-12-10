@@ -6,7 +6,7 @@
 // FIFO / RING buffer DLL
 // MultiThreading supported
 
-// Version : 0.6
+// Version : 0.6.3
 
 // Machine:
 // Core I7 920 @ 2,8Ghz
@@ -36,10 +36,12 @@
 //		* Speed optimizations (Reduced additional readpointer performance hit)
 //		* Added support for up to 32 parallel readpointers
 //		* Release Writespeed : 12105MB/s (64k)
-// 0.7
-//		* Todo : improve Readspead for small blocksize
-//		* Todo : improve Writespead for small blocksize
-//		* Todo : RING : Dynamic Block Writing
+// 0.6.3
+//		* Speed optimizations (RING : Added Dynamic Block Writing)
+// 0.6.4
+//		* Updated Header
+//		* Updated Example
+
 
 #include "stdafx.h"
 #include "Buffers.h"
@@ -143,7 +145,7 @@ void Buffers::Flush(int NrPtr)
 		{
 			for (unsigned int i=0;i<this->NrPtrs;i++)
 			{
-				this->RdPtr[i]=this->WrPtr;
+				this->RdPtr[i] = this->WrPtr;
 				this->QLoad[i] = 0;
 			}
 		}

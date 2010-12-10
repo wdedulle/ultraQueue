@@ -25,9 +25,10 @@ extern "C"{
 BUFFERS_API unsigned int CALLING_CONVENTION BufferCreate (unsigned int size,unsigned int buffertype, unsigned int NrReadChannels);
 	//Create a new Buffer
 	// Parameters :
-	//		- Size of the buffer in bytes (max 512MB ; min 16B)
+	//		- Size of the buffer in bytes (Min 16B; Max 512MB)
 	//		- Type of buffer : 0 = FIFO	; 1 = RING
-	//		- Amount of ReadChannel wanted. (Max = 32;  Giving higher values will set it to the maximum)
+	//		- Amount of ReadChannel wanted. (Min = 1; Max = 32;  Giving higher values will set it to the maximum)
+	//			* Example,  setting amount to 4 will allow to use ChannelNr's  0, 1, 2  & 3
 	// Return : 
 	//		- 0 : Unknown buffertype / A minimum of 1 ReadChannel should be requested
 	//		- >0 : Buffer ID
@@ -47,6 +48,7 @@ BUFFERS_API int CALLING_CONVENTION BufferRead (unsigned int buffer_nr, unsigned 
 	//Read from a buffer
 	// Parameters :
 	//		- Buffer ID
+	//		- Nr of the ReadChannel
 	//		- Nr of bytes you wish to read
 	//		- Pointer to the user's array (0-term not needed)
 	// Return : status
@@ -72,11 +74,13 @@ BUFFERS_API void CALLING_CONVENTION BufferFlush (unsigned int buffer_nr, int Rea
 	//Clear the buffer
 	// Parameters :
 	//		- Buffer ID
+	//		- Nr of the ReadChannel	(passing "-1" will clear ALL available channels)
 
 BUFFERS_API unsigned int CALLING_CONVENTION BufferSpaceAvailable (unsigned int buffer_nr, unsigned int ReadChannel);
 	//Request amount of Space available
 	// Parameters :
 	//		- Buffer ID
+	//		- Nr of the ReadChannel
 	// Return : status
 	//		- 0	: No Bytes Available in this Queue/ReadChannel.  0 is also returned when Buffer or ReadChannel does not exist
 	//		- FIFO	: Available space (in bytes) before data will be overwritten for this ReadChannel
@@ -86,6 +90,7 @@ BUFFERS_API double CALLING_CONVENTION BufferSpaceAvailable_Percentage (unsigned 
 	//Request amount of Space available (in Percentage)
 	// Parameters :
 	//		- Buffer ID
+	//		- Nr of the ReadChannel
 	// Return : status
 	//		- -1	: Invalid ReadChannel
 	//		- FIFO	: Available space (in percentage) before data will be overwritten for this ReadChannel
@@ -95,6 +100,7 @@ BUFFERS_API unsigned int CALLING_CONVENTION BufferSpaceUsed (unsigned int buffer
 	//Request amount of Space used
 	// Parameters :
 	//		- Buffer ID
+	//		- Nr of the ReadChannel
 	// Return : status
 	//		- Amount of used space (in bytes)	0 is also returned when Buffer or ReadChannel does not exist
 
@@ -102,6 +108,7 @@ BUFFERS_API double CALLING_CONVENTION BufferSpaceUsed_Percentage (unsigned int b
 	//Request amount of Space used
 	// Parameters :
 	//		- Buffer ID
+	//		- Nr of the ReadChannel
 	// Return : status
 	//		- Amount of used space (in bytes)
 

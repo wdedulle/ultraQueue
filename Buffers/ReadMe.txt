@@ -1,3 +1,9 @@
+0.6.4
+-----
+	- Added : BufferFlush() now accepts "-1" as ChannelNr, clearing ALL queues
+	- Fix : ChannelNr parameters was not present in the Header doc.
+	- Example file has been updated with BufferFlush()
+
 0.6.3
 -----
 	- Added : Dynamic Block Writing (RING)
