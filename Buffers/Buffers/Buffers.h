@@ -27,7 +27,7 @@ BUFFERS_API unsigned int CALLING_CONVENTION BufferCreate (unsigned int size,unsi
 	// Parameters :
 	//		- Size of the buffer in bytes (Min 16B; Max 512MB)
 	//		- Type of buffer : 0 = FIFO	; 1 = RING
-	//		- Amount of ReadChannel wanted. (Min = 1; Max = 32;  Giving higher values will set it to the maximum)
+	//		- Amount of ReadChannels wanted. (Min = 1; Max = 32;  Giving higher values will set it to the maximum)
 	//			* Example,  setting amount to 4 will allow to use ChannelNr's  0, 1, 2  & 3
 	// Return : 
 	//		- 0 : Unknown buffertype / A minimum of 1 ReadChannel should be requested
@@ -62,7 +62,7 @@ BUFFERS_API int CALLING_CONVENTION BufferWrite (unsigned int buffer_nr, unsigned
 	//Write to a buffer
 	// Parameters :
 	//		- Buffer ID
-	//		- Nr of bytes you wish to write
+	//		- Nr of bytes to write
 	//		- Pointer to the user's array containing the data (0-term not needed)
 	// Return : status
 	//		 0 : OK

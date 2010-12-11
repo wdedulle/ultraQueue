@@ -1,3 +1,9 @@
+0.6.5
+-----
+	- Added : 2 Application Examples
+		* RS232 Driver
+		* High Speed Capturing
+
 0.6.4
 -----
 	- Added : BufferFlush() now accepts "-1" as ChannelNr, clearing ALL queues

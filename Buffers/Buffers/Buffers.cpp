@@ -404,12 +404,13 @@ unsigned int CALLING_CONVENTION BufferCreate (unsigned int size, unsigned int bu
 	unsigned int i=0;
 	
 	if (NrReadChannels > MAXPTRS) NrReadChannels = MAXPTRS;	// Check (and set) maximum allowed nr of Read Pointers
+	if (!NrReadChannels) return 0;	// ReadChannels must be at least 1
 
 	if (size > 1048576*MAXSIZE) size = 1048576*MAXSIZE;	// Buffer Maximum Capacity
 	if (size < MINSIZE) size = MINSIZE;	// Buffer Minimum Capacity
 
 	if (buffertype > 1) return 0;	// Unknown Buffertype
-	if (!NrReadChannels) return 0;	// ReadChannels must be at least 1
+	
 	Buffers * NewBuffer = new Buffers(NrReadChannels, size, buffertype);
 	i = (unsigned int) NewBuffer;
 	return i;
