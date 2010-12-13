@@ -241,18 +241,18 @@ private: System::Void button4_Click(System::Object^  sender, System::EventArgs^ 
 			if (b == 0x5b) b=0x41;
 		}
 
-		v = BufferCreate(16,RING,2);	// function(size,buffertype,ReadChannels)
+		v = BufferCreate(16,FIFO,1);	// function(size,buffertype,ReadChannels)
 
+bool bd = false;
 
 tstart = GetTickCount();	// Get begintime
 
 		test = BufferWrite(v,15,a);	//BufferWrite (unsigned int buffer_nr, unsigned int NrOfBytes, char * Data);
-		test = BufferRead(v,0,4,aa);		//BUFFERS_API int CALLING_CONVENTION BufferRead (unsigned int buffer_nr, unsigned short ReadChannel, unsigned int NrOfBytes, char * Data);
-		test = BufferSpaceUsed(v,0);
-		test = BufferSpaceUsed(v,1);
-
+		bd = BufferGetOverflow_Wait(v);
 		test = BufferWrite(v,5,a);	//BufferWrite (unsigned int buffer_nr, unsigned int NrOfBytes, char * Data);
-
+		bd = BufferGetOverflow_Wait(v);
+		BufferClearOverflow_Wait(v);
+		bd = BufferGetOverflow_Wait(v);
 tend = GetTickCount();	// Get end time
 
 tdif = tend - tstart; //will now have the time elapsed since the start of the call	(performance measurement

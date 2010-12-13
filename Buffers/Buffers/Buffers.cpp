@@ -69,6 +69,8 @@ public:
 	int Write (unsigned int w, unsigned char * d);
 	unsigned int GetBuffertype();
 	unsigned int CQsize();
+	bool StatusGetOverFlow();
+	void StatusClearOverFlow();
 
 private:
 	int CreateQueue(unsigned int size);
@@ -79,6 +81,7 @@ private:
 	unsigned int WrPtr;
 	unsigned int BufferType;
 	unsigned int NrPtrs;
+	volatile bool OverFlow;
 	CRITICAL_SECTION Crit1;
 };
 
@@ -90,6 +93,7 @@ Buffers::Buffers(unsigned int _NrPtrs, unsigned int _size, unsigned int _BufferT
 	this->WrPtr = 0;
 	this->BufferType = _BufferType;
 	this->NrPtrs = _NrPtrs;
+	this->OverFlow = false;
 	
 	for (unsigned int i=0;i<_NrPtrs;i++)
 		{
@@ -269,11 +273,13 @@ int Buffers::Write (unsigned int w, unsigned char * d)
 		{
 			if(temp_QLoad[i] >= temp_size)
 				{
+					this->OverFlow = true;	// Set flag to inform that a write action could not be performed
 					LeaveCriticalSection(&Crit1);
 					return -2;	// One of the Ring buffers is completely full
 				}
 			if (w > (temp_size - temp_QLoad[i]))
 				{
+					this->OverFlow = true;	// Set flag to inform that a write action could not be performed
 					LeaveCriticalSection(&Crit1);
 					return -3;	// One of the Ring buffers lacks space to write all requested bytes
 				}
@@ -363,6 +369,7 @@ int Buffers::Write (unsigned int w, unsigned char * d)
 				{
 					temp_QLoad[q] = temp_size; // Max. possible amount is queue size
 					temp_RdPtr[q] = temp_WrPtr; // Pointers are equal when buffer is full
+					this->OverFlow = true;	// Set flag to indicate that we lost data
 				}
 				else	// Load is within Queue limits
 				{
@@ -393,6 +400,24 @@ unsigned int Buffers::GetBuffertype()
 unsigned int Buffers::CQsize()
 {
 	return this->size;
+}
+
+bool Buffers::StatusGetOverFlow()
+{
+	bool a = false;
+	
+	EnterCriticalSection(&Crit1);
+		a = this->OverFlow;
+	LeaveCriticalSection(&Crit1);
+
+	return a;
+}
+
+void Buffers::StatusClearOverFlow()
+{
+	EnterCriticalSection(&Crit1);
+		this->OverFlow = false;
+	LeaveCriticalSection(&Crit1);
 }
 
 //*********************
@@ -477,4 +502,14 @@ double CALLING_CONVENTION BufferSpaceUsed_Percentage (unsigned int buffer_nr, un
 	return  k;
 }
 
+bool CALLING_CONVENTION BufferGetOverflow_Wait (unsigned int buffer_nr)
+{
+	Buffers * incoming = (Buffers*) buffer_nr;
+	return incoming->StatusGetOverFlow();
+}
 
+void CALLING_CONVENTION BufferClearOverflow_Wait (unsigned int buffer_nr)
+{
+	Buffers * incoming = (Buffers*) buffer_nr;
+	incoming->StatusClearOverFlow();
+}
