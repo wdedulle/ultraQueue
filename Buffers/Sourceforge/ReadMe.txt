@@ -1,3 +1,7 @@
+0.6.7
+-----
+	- Added : OverFlow/Wait flag functions (See "Code Example" for details)
+
 0.6.6
 -----
 	- Added : 1 Application Example

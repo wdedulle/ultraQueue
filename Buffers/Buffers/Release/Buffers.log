@@ -1,7 +1,31 @@
-﻿  stdafx.cpp
-  Buffers.cpp
-  dllmain.cpp
-     Creating library C:\Users\xback\documents\visual studio 2010\Projects\Buffers\Release\Buffers.lib and object C:\Users\xback\documents\visual studio 2010\Projects\Buffers\Release\Buffers.exp
-  Generating code
-  Finished generating code
-  Buffers.vcxproj -> C:\Users\xback\documents\visual studio 2010\Projects\Buffers\Release\Buffers.dll
+﻿Build started 13/12/2010 14:48:17.
+     1>Project "C:\repos\Buffers\Buffers\Buffers.vcxproj" on node 2 (rebuild target(s)).
+     1>_PrepareForClean:
+         Deleting file "Release\Buffers.lastbuildstate".
+       InitializeBuildStatus:
+         Creating "Release\Buffers.unsuccessfulbuild" because "AlwaysCreate" was specified.
+       ClCompile:
+         C:\Program Files\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /Zi /nologo /W3 /WX- /MP /Ox /Ob2 /Oi /Ot /Oy /GL /D WIN32 /D NDEBUG /D _WINDOWS /D _USRDLL /D BUFFERS_EXPORTS /D _WINDLL /Gm- /EHsc /MD /GS /Gy /arch:SSE2 /fp:precise /Zc:wchar_t /Zc:forScope /Yc"StdAfx.h" /Fp"Release\Buffers.pch" /Fo"Release\\" /Fd"Release\vc100.pdb" /Gr /TP /analyze- /errorReport:prompt stdafx.cpp
+         stdafx.cpp
+         C:\Program Files\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /Zi /nologo /W3 /WX- /MP /Ox /Ob2 /Oi /Ot /Oy /GL /D WIN32 /D NDEBUG /D _WINDOWS /D _USRDLL /D BUFFERS_EXPORTS /D _WINDLL /Gm- /EHsc /MD /GS /Gy /arch:SSE2 /fp:precise /Zc:wchar_t /Zc:forScope /Yu"StdAfx.h" /Fp"Release\Buffers.pch" /Fo"Release\\" /Fd"Release\vc100.pdb" /Gr /TP /analyze- /errorReport:prompt Buffers.cpp
+         Buffers.cpp
+         C:\Program Files\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /Zi /nologo /W3 /WX- /MP /Ox /Ob2 /Oi /Ot /Oy /GL /D WIN32 /D NDEBUG /D _WINDOWS /D _USRDLL /D BUFFERS_EXPORTS /D _WINDLL /Gm- /EHsc /MD /GS /Gy /arch:SSE2 /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Release\\" /Fd"Release\vc100.pdb" /Gr /TP /analyze- /errorReport:prompt dllmain.cpp
+         dllmain.cpp
+       Link:
+         C:\Program Files\Microsoft Visual Studio 10.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\repos\Buffers\Release\Buffers.dll" /INCREMENTAL:NO /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /ManifestFile:"Release\Buffers.dll.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"C:\repos\Buffers\Release\Buffers.pdb" /SUBSYSTEM:WINDOWS /OPT:REF /OPT:ICF /LTCG /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\repos\Buffers\Release\Buffers.lib" /MACHINE:X86 /DLL Release\Buffers.obj
+         Release\dllmain.obj
+         Release\stdafx.obj
+            Creating library C:\repos\Buffers\Release\Buffers.lib and object C:\repos\Buffers\Release\Buffers.exp
+         Generating code
+         Finished generating code
+         Buffers.vcxproj -> C:\repos\Buffers\Release\Buffers.dll
+       Manifest:
+         C:\Program Files\Microsoft SDKs\Windows\v7.0A\bin\mt.exe /nologo /verbose /outputresource:"C:\repos\Buffers\Release\Buffers.dll;#2" /manifest Release\Buffers.dll.intermediate.manifest
+       FinalizeBuildStatus:
+         Deleting file "Release\Buffers.unsuccessfulbuild".
+         Touching "Release\Buffers.lastbuildstate".
+     1>Done Building Project "C:\repos\Buffers\Buffers\Buffers.vcxproj" (rebuild target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:02.37

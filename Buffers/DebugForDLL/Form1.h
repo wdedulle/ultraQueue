@@ -233,26 +233,19 @@ private: System::Void button4_Click(System::Object^  sender, System::EventArgs^ 
 
 		int test=0;
 		DWORD tstart, tend, tdif;
-		
-		for (unsigned int i1=0;i1<sizeof a;i1++)
-		{
-			a[i1] = b;
-			b++;
-			if (b == 0x5b) b=0x41;
-		}
 
-		v = BufferCreate(16,FIFO,1);	// function(size,buffertype,ReadChannels)
+
+		v = BufferCreate(256*1048576,FIFO,32);	// function(size,buffertype,ReadChannels)
 
 bool bd = false;
 
 tstart = GetTickCount();	// Get begintime
 
-		test = BufferWrite(v,15,a);	//BufferWrite (unsigned int buffer_nr, unsigned int NrOfBytes, char * Data);
-		bd = BufferGetOverflow_Wait(v);
-		test = BufferWrite(v,5,a);	//BufferWrite (unsigned int buffer_nr, unsigned int NrOfBytes, char * Data);
-		bd = BufferGetOverflow_Wait(v);
-		BufferClearOverflow_Wait(v);
-		bd = BufferGetOverflow_Wait(v);
+for (int i=0;i<32768*16;i++)
+{
+	test = BufferWrite(v,sizeof a,a);
+}
+
 tend = GetTickCount();	// Get end time
 
 tdif = tend - tstart; //will now have the time elapsed since the start of the call	(performance measurement

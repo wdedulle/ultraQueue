@@ -1,6 +1,40 @@
-﻿  stdafx.cpp
-  Buffers.cpp
-  dllmain.cpp
-     Creating library C:\Users\xback\documents\visual studio 2010\Projects\Buffers\Debug\Buffers.lib and object C:\Users\xback\documents\visual studio 2010\Projects\Buffers\Debug\Buffers.exp
-     Creating library C:\Users\xback\documents\visual studio 2010\Projects\Buffers\Debug\Buffers.lib and object C:\Users\xback\documents\visual studio 2010\Projects\Buffers\Debug\Buffers.exp
-  Buffers.vcxproj -> C:\Users\xback\documents\visual studio 2010\Projects\Buffers\Debug\Buffers.dll
+﻿Build started 13/12/2010 14:42:50.
+     1>Project "C:\repos\Buffers\Buffers\Buffers.vcxproj" on node 2 (rebuild target(s)).
+     1>_PrepareForClean:
+         Deleting file "Debug\Buffers.lastbuildstate".
+       InitializeBuildStatus:
+         Creating "Debug\Buffers.unsuccessfulbuild" because "AlwaysCreate" was specified.
+       ClCompile:
+         C:\Program Files\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Ob0 /Oy- /D WIN32 /D _DEBUG /D _WINDOWS /D _USRDLL /D BUFFERS_EXPORTS /D _WINDLL /Gm- /EHsc /MDd /GS /Gy /arch:SSE2 /fp:precise /Zc:wchar_t /Zc:forScope /Yc"StdAfx.h" /Fp"Debug\Buffers.pch" /Fo"Debug\\" /Fd"Debug\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt stdafx.cpp
+         stdafx.cpp
+         C:\Program Files\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Ob0 /Oy- /D WIN32 /D _DEBUG /D _WINDOWS /D _USRDLL /D BUFFERS_EXPORTS /D _WINDLL /Gm- /EHsc /MDd /GS /Gy /arch:SSE2 /fp:precise /Zc:wchar_t /Zc:forScope /Yu"StdAfx.h" /Fp"Debug\Buffers.pch" /Fo"Debug\\" /Fd"Debug\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt Buffers.cpp
+         Buffers.cpp
+         C:\Program Files\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Ob0 /Oy- /D WIN32 /D _DEBUG /D _WINDOWS /D _USRDLL /D BUFFERS_EXPORTS /D _WINDLL /Gm- /EHsc /MDd /GS /Gy /arch:SSE2 /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt dllmain.cpp
+         dllmain.cpp
+       ManifestResourceCompile:
+         C:\Program Files\Microsoft SDKs\Windows\v7.0A\bin\rc.exe /nologo /fo"Debug\Buffers.dll.embed.manifest.res" Debug\Buffers_manifest.rc 
+       Link:
+         C:\Program Files\Microsoft Visual Studio 10.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\repos\Buffers\Debug\Buffers.dll" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /ManifestFile:"Debug\Buffers.dll.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"C:\repos\Buffers\Debug\Buffers.pdb" /SUBSYSTEM:WINDOWS /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\repos\Buffers\Debug\Buffers.lib" /MACHINE:X86 /DLL Debug\Buffers.dll.embed.manifest.res
+         Debug\Buffers.obj
+         Debug\dllmain.obj
+         Debug\stdafx.obj
+            Creating library C:\repos\Buffers\Debug\Buffers.lib and object C:\repos\Buffers\Debug\Buffers.exp
+       Manifest:
+         Deleting file "Debug\Buffers.dll.embed.manifest".
+         C:\Program Files\Microsoft SDKs\Windows\v7.0A\bin\mt.exe /nologo /verbose /out:"Debug\Buffers.dll.embed.manifest" /manifest Debug\Buffers.dll.intermediate.manifest
+         C:\Program Files\Microsoft SDKs\Windows\v7.0A\bin\rc.exe /nologo /fo"Debug\Buffers.dll.embed.manifest.res" Debug\Buffers_manifest.rc 
+       LinkEmbedManifest:
+         C:\Program Files\Microsoft Visual Studio 10.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\repos\Buffers\Debug\Buffers.dll" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /ManifestFile:"Debug\Buffers.dll.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"C:\repos\Buffers\Debug\Buffers.pdb" /SUBSYSTEM:WINDOWS /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\repos\Buffers\Debug\Buffers.lib" /MACHINE:X86 /DLL Debug\Buffers.dll.embed.manifest.res
+         Debug\Buffers.obj
+         Debug\dllmain.obj
+         Debug\stdafx.obj
+            Creating library C:\repos\Buffers\Debug\Buffers.lib and object C:\repos\Buffers\Debug\Buffers.exp
+         Buffers.vcxproj -> C:\repos\Buffers\Debug\Buffers.dll
+       FinalizeBuildStatus:
+         Deleting file "Debug\Buffers.unsuccessfulbuild".
+         Touching "Debug\Buffers.lastbuildstate".
+     1>Done Building Project "C:\repos\Buffers\Buffers\Buffers.vcxproj" (rebuild target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:03.43

@@ -6,7 +6,7 @@
 // FIFO / RING buffer DLL
 // MultiThreading supported
 
-// Version : 0.6.3
+// Version : 0.6.7
 
 // Machine:
 // Core I7 920 @ 2,8Ghz

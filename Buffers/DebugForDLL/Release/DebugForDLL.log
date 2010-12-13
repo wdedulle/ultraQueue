@@ -1,5 +1,34 @@
-﻿  stdafx.cpp
-  AssemblyInfo.cpp
-  DebugForDLL.cpp
-  Generating Code...
-  DebugForDLL.vcxproj -> C:\Users\xback\documents\visual studio 2010\Projects\Buffers\Release\DebugForDLL.exe
+﻿Build started 13/12/2010 14:48:19.
+     1>Project "C:\repos\Buffers\DebugForDLL\DebugForDLL.vcxproj" on node 3 (rebuild target(s)).
+     1>_PrepareForClean:
+         Deleting file "Release\DebugForDLL.lastbuildstate".
+       InitializeBuildStatus:
+         Creating "Release\DebugForDLL.unsuccessfulbuild" because "AlwaysCreate" was specified.
+       ClCompile:
+         C:\Program Files\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /IC:\repos\Buffers\\Buffers /AI"c:\Program Files\Reference Assemblies\Microsoft\Framework\v3.5\\" /AIC:\WINDOWS\Microsoft.NET\Framework\v3.5\ /AI"C:\Program Files\Reference Assemblies\Microsoft\Framework\v3.0\\" /AIC:\WINDOWS\Microsoft.NET\Framework\v3.0\ /AIC:\WINDOWS\Microsoft.NET\Framework\v2.0.50727\ /Zi /clr /nologo /W3 /WX- /Od /Oy- /D WIN32 /D NDEBUG /D _UNICODE /D UNICODE /D BUFFERS_EXPORTS /EHa /MD /GS /fp:precise /Zc:wchar_t /Zc:forScope /Yc"StdAfx.h" /Fp"Release\DebugForDLL.pch" /Fo"Release\\" /Fd"Release\vc100.pdb" /TP /FU"c:\Program Files\Reference Assemblies\Microsoft\Framework\v3.5\System.Core.dll" /FUC:\WINDOWS\Microsoft.NET\Framework\v2.0.50727\System.Data.dll /FUC:\WINDOWS\Microsoft.NET\Framework\v2.0.50727\System.dll /FUC:\WINDOWS\Microsoft.NET\Framework\v2.0.50727\System.Drawing.dll /FUC:\WINDOWS\Microsoft.NET\Framework\v2.0.50727\System.Windows.Forms.dll /FUC:\WINDOWS\Microsoft.NET\Framework\v2.0.50727\System.Xml.dll /analyze- /errorReport:prompt stdafx.cpp /d1clr:nostdlib 
+         stdafx.cpp
+         C:\Program Files\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /IC:\repos\Buffers\\Buffers /AI"c:\Program Files\Reference Assemblies\Microsoft\Framework\v3.5\\" /AIC:\WINDOWS\Microsoft.NET\Framework\v3.5\ /AI"C:\Program Files\Reference Assemblies\Microsoft\Framework\v3.0\\" /AIC:\WINDOWS\Microsoft.NET\Framework\v3.0\ /AIC:\WINDOWS\Microsoft.NET\Framework\v2.0.50727\ /Zi /clr /nologo /W3 /WX- /Od /Oy- /D WIN32 /D NDEBUG /D _UNICODE /D UNICODE /D BUFFERS_EXPORTS /EHa /MD /GS /fp:precise /Zc:wchar_t /Zc:forScope /Yu"StdAfx.h" /Fp"Release\DebugForDLL.pch" /Fo"Release\\" /Fd"Release\vc100.pdb" /TP /FU"c:\Program Files\Reference Assemblies\Microsoft\Framework\v3.5\System.Core.dll" /FUC:\WINDOWS\Microsoft.NET\Framework\v2.0.50727\System.Data.dll /FUC:\WINDOWS\Microsoft.NET\Framework\v2.0.50727\System.dll /FUC:\WINDOWS\Microsoft.NET\Framework\v2.0.50727\System.Drawing.dll /FUC:\WINDOWS\Microsoft.NET\Framework\v2.0.50727\System.Windows.Forms.dll /FUC:\WINDOWS\Microsoft.NET\Framework\v2.0.50727\System.Xml.dll /analyze- /errorReport:prompt AssemblyInfo.cpp DebugForDLL.cpp /d1clr:nostdlib 
+         AssemblyInfo.cpp
+         DebugForDLL.cpp
+         Generating Code...
+       CoreResGen:
+         C:\Program Files\Microsoft SDKs\Windows\v7.0A\bin\ResGen.exe /useSourcePath /r:"c:\Program Files\Reference Assemblies\Microsoft\Framework\v3.5\System.Core.dll" /r:C:\WINDOWS\Microsoft.NET\Framework\v2.0.50727\System.Data.dll /r:C:\WINDOWS\Microsoft.NET\Framework\v2.0.50727\System.dll /r:C:\WINDOWS\Microsoft.NET\Framework\v2.0.50727\System.Drawing.dll /r:C:\WINDOWS\Microsoft.NET\Framework\v2.0.50727\System.Windows.Forms.dll /r:C:\WINDOWS\Microsoft.NET\Framework\v2.0.50727\System.Xml.dll /compile Form1.resX,Release\DebugForDLL.Form1.resources 
+       ResourceCompile:
+         C:\Program Files\Microsoft SDKs\Windows\v7.0A\bin\rc.exe /D _UNICODE /D UNICODE /l"0x0409" /nologo /fo"Release\app.res" app.rc 
+       Link:
+         C:\Program Files\Microsoft Visual Studio 10.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\repos\Buffers\Release\DebugForDLL.exe" /INCREMENTAL:NO /NOLOGO /ASSEMBLYRESOURCE:Release\DebugForDLL.Form1.resources /MANIFEST /ManifestFile:"Release\DebugForDLL.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"C:\repos\Buffers\Release\DebugForDLL.pdb" /SUBSYSTEM:WINDOWS /TLBID:1 /ENTRY:"main" /DYNAMICBASE /FIXED:NO /NXCOMPAT /MACHINE:X86 Release\app.res
+         Release\AssemblyInfo.obj
+         Release\DebugForDLL.obj
+         Release\stdafx.obj
+         ..\Release\Buffers.lib
+         DebugForDLL.vcxproj -> C:\repos\Buffers\Release\DebugForDLL.exe
+       Manifest:
+         C:\Program Files\Microsoft SDKs\Windows\v7.0A\bin\mt.exe /nologo /verbose /outputresource:"C:\repos\Buffers\Release\DebugForDLL.exe;#1" /manifest Release\DebugForDLL.exe.intermediate.manifest
+       FinalizeBuildStatus:
+         Deleting file "Release\DebugForDLL.unsuccessfulbuild".
+         Touching "Release\DebugForDLL.lastbuildstate".
+     1>Done Building Project "C:\repos\Buffers\DebugForDLL\DebugForDLL.vcxproj" (rebuild target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:04.10

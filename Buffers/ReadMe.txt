@@ -1,6 +1,6 @@
 0.6.7
 -----
-	- Added : OverFlow/Wait flag (See "Code Example" for details)
+	- Added : OverFlow/Wait flag functions (See "Code Example" for details)
 
 0.6.6
 -----
