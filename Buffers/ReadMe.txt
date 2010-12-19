@@ -1,3 +1,9 @@
+0.6.8
+-----
+	- Added : Doc. -> Benchmarks
+		  Helps the programmer to get the max. speed using UltraQueue
+		  See "Benchmarks" folder
+
 0.6.7
 -----
 	- Added : OverFlow/Wait flag functions (See "Code Example" for details)

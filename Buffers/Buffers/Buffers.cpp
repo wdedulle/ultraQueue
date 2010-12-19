@@ -46,7 +46,7 @@
 #include "stdafx.h"
 #include "Buffers.h"
 
-#define MAXSIZE 512	// In MegaBytes
+#define MAXSIZE 1024	// In MegaBytes
 #define MINSIZE 16	// In Bytes
 
 #define MAXPTRS 32
@@ -102,7 +102,7 @@ Buffers::Buffers(unsigned int _NrPtrs, unsigned int _size, unsigned int _BufferT
 		}
 	InitializeCriticalSectionAndSpinCount(&Crit1, 0x0001FFFF);		// 128k Spin is added so a thread does not use an expensive Sleep while the 
 																	// chance is high it will be able to continue within a few cycles
-																	// This improves the speed dramatically on very small Reads or Writes
+																	// This improves the speed dramatically on very small Threaded Reads or Writes
 }
 
 //Destructor

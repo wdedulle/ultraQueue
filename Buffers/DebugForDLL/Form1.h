@@ -227,100 +227,119 @@ namespace DebugForDLL {
 private: System::Void button4_Click(System::Object^  sender, System::EventArgs^  e) {
 
 		unsigned int v =0;
-		unsigned char a[65536];
+		unsigned char a[262144];
 		unsigned char b = 0x41;
 		unsigned char aa[24] = {0};
 
+		double results[24] = {0};
 		int test=0;
 		DWORD tstart, tend, tdif;
 
+		unsigned int writesizesmall=256;
+		unsigned int start_blocksizesmall=1;
+		unsigned int stop_blocksizesmall=256;
 
-		v = BufferCreate(256*1048576,FIFO,32);	// function(size,buffertype,ReadChannels)
+		unsigned int writesizelarge=32768;
+		unsigned int start_blocksizelarge=512;
+		unsigned int stop_blocksizelarge=262144;
 
 bool bd = false;
+unsigned int resultptr =0;
 
-tstart = GetTickCount();	// Get begintime
+bool dosmall = false;
+bool dolarge = false;
 
-for (int i=0;i<32768*16;i++)
+
+
+if (dosmall)
 {
-	test = BufferWrite(v,sizeof a,a);
+	v = BufferCreate(64*1048576,FIFO,32);	// function(size,buffertype,ReadChannels)
+
+	for (unsigned int loops=start_blocksizesmall;loops<=stop_blocksizesmall;loops *= 2)
+	{
+			tstart = GetTickCount();	// Get begintime
+
+			for (unsigned int i=0;i<(1048576*writesizesmall)/loops;i++)
+			{
+				test = BufferWrite(v,loops,a);
+			}
+
+			tend = GetTickCount();	// Get end time
+
+			tdif = tend - tstart; //will now have the time elapsed since the start of the call	(performance measurement
+
+			results[resultptr] = ((double)writesizesmall/(double)tdif)*1000;
+			resultptr++;
+
+			BufferFlush(v,-1);
+	}
+
+	BufferRelease(v);
 }
 
-tend = GetTickCount();	// Get end time
+if (dolarge)
+{
+	v = BufferCreate(512*1048576,FIFO,32);	// function(size,buffertype,ReadChannels)
 
-tdif = tend - tstart; //will now have the time elapsed since the start of the call	(performance measurement
+	for (unsigned int loops=start_blocksizelarge;loops<=stop_blocksizelarge;loops *= 2)
+	{
+			tstart = GetTickCount();	// Get begintime
 
-double gh = ((double)32768/(double)tdif)*1000;
+			for (unsigned int i=0;i<((1024*writesizelarge)/loops)*1024;i++)
+			{
+				test = BufferWrite(v,loops,a);
+			}
 
-tstart = GetTickCount();	// Get begintime
+			tend = GetTickCount();	// Get end time
 
-// Original Writespeeds	(single ptr)
-//64k : 341	-> 12073 (4 ptrs : 107)
-//32k : 341 -> 11409
-//16k : 338 -> 10502
-// 8k : 339
-// 4k : 336
-// 2k : 325
-// 1k : 313	(4 ptrs : 104)
-// 512 : 288 -> 1381
-// 256 : 248
-// 128 : 213
-// 64 : 124 -> 238
-// 32 : 90
-// 16 : 53
-// 8 : 34->33 (4 ptrs : 24)
-// 4 : 12->14
-// 2 :7,5 	(4 ptrs : 7,8)
-// 1 :4,7
+			tdif = tend - tstart; //will now have the time elapsed since the start of the call	(performance measurement
 
-//Read
+			results[resultptr] = ((double)writesizelarge/(double)tdif)*1000;
+			resultptr++;
+
+			BufferFlush(v,-1);
+	}
+
+	BufferRelease(v);
+}
+
+resultptr	=	0;
+
+//Read benchmarks
+
+double ReadResults[24] = {0};
+unsigned int ReadResultsPtr=0;
+unsigned int ReadPtr=0;
+int stat=0;
+
+v = BufferCreate(1024*1048576,FIFO,32);	// function(size,buffertype,ReadChannels)
+
+for (unsigned int i=0;i<4096;i++)
+	{
+		test = BufferWrite(v,sizeof a,a);
+	}
 
 
+for (unsigned int i=1;i<=(256*1024);i*=2)
+	{
+		tstart = GetTickCount();	// Get begintime
 
-//1st = 5
-// last in row = N
+		for (unsigned int j=0;j<((1024*1024)/i)*1024;j++)
+		{
+			stat = BufferRead (v, ReadPtr, i, a);
+		}
+		
+		tend = GetTickCount();	// Get end time
+		tdif = tend - tstart; //will now have the time elapsed since the start of the call	(performance measurement
 
-unsigned char a1[20] = {0};
+		ReadResults[ReadResultsPtr] = ((double)1024/(double)tdif)*1000;
+		ReadResultsPtr++;
+		ReadPtr++;
+	}
 
-unsigned int count = 0;
 
-test = BufferSpaceUsed(v,0);
-test /= 1048576;
-//for (unsigned int t=0;t<1024*524288;t++)
-//{
-		test = BufferRead(v,0,16,a1);		//BUFFERS_API int CALLING_CONVENTION BufferRead (unsigned int buffer_nr, unsigned short ReadChannel, unsigned int NrOfBytes, char * Data);
-
-//}
-
-test = BufferSpaceUsed(v,0);
-
-tend = GetTickCount();	// Get end time
-
-tdif = tend - tstart; //will now have the time elapsed since the start of the call	(performance measurement
-
-double ij = ((double)1024/(double)tdif)*1000;
-
-// DEBUG
-//126080
-
-// RELEASE	(speed in MB/s)
-//Write
-//156	original code
-//178
-//189
-//266
-//295
-
-//Read : 605
-
-double WriteSpeed = gh;
-double ReadSpeed = ij;
-
-// Byte-Byte
-// 7,3
-// BlockWrite
-// 8,41
-BufferRelease(v);
+results[23]=0;
+ReadResults[23]=0;
 
 textBox1->Text = "done";
 
