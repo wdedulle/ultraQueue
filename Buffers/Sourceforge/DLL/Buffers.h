@@ -30,7 +30,7 @@ BUFFERS_API unsigned int CALLING_CONVENTION BufferCreate (unsigned int size,unsi
 	//		- Amount of ReadChannels wanted. (Min = 1; Max = 32;  Giving higher values will set it to the maximum)
 	//			* Example,  setting amount to 4 will allow to use ChannelNr's  0, 1, 2  & 3
 	// Return : 
-	//		- 0 : Unknown buffertype / A minimum of 1 ReadChannel should be requested
+	//		- 0 : Unknown buffertype / A minimum of 1 ReadChannel should be requested / Out Of Memory
 	//		- >0 : Buffer ID
 
 // Additional info :

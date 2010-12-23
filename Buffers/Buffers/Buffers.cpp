@@ -6,47 +6,10 @@
 // FIFO / RING buffer DLL
 // MultiThreading supported
 
-// Version : 0.6.7
-
-// Machine:
-// Core I7 920 @ 2,8Ghz
-// DDR3 1600 3Ch
-
-// 0.1
-//		* Inital working version
-//		* Release Writespeed : 46MB/s
-//		* Release Readspeed : 96MB/s
-// 0.2
-//		* Added multi read pointers (25% perf. loss per added pointer)
-// 0.3
-//		* Various speed optimizations
-//		* Release Writespeed : 98MB/s	(single pointer)
-//		* Release Readspeed : 196MB/s
-// 0.4
-//		* Various speed optimizations (cache improvements)
-//		* Release Writespeed : 295MB/s (single pointer)
-//		* Release Readspeed : 605MB/s
-// 0.5
-//		* Speed optimizations (Added Dynamic Block Reading)
-//		* Speed optimizations (small finetuning to write)
-//		* Release Writespeed : 305MB/s
-//		* Release Readspeed : 9385MB/s	(>=32kB blocks)
-// 0.6
-//		* Speed optimizations (FIFO : Added Dynamic Block Writing)
-//		* Speed optimizations (Reduced additional readpointer performance hit)
-//		* Added support for up to 32 parallel readpointers
-//		* Release Writespeed : 12105MB/s (64k)
-// 0.6.3
-//		* Speed optimizations (RING : Added Dynamic Block Writing)
-// 0.6.4
-//		* Updated Header
-//		* Updated Example
-
-
 #include "stdafx.h"
 #include "Buffers.h"
 
-#define MAXSIZE 1024	// In MegaBytes
+#define MAXSIZE 512	// In MegaBytes
 #define MINSIZE 16	// In Bytes
 
 #define MAXPTRS 32
@@ -71,6 +34,7 @@ public:
 	unsigned int CQsize();
 	bool StatusGetOverFlow();
 	void StatusClearOverFlow();
+	bool QueueError;
 
 private:
 	int CreateQueue(unsigned int size);
@@ -88,6 +52,7 @@ private:
 //Constructor
 Buffers::Buffers(unsigned int _NrPtrs, unsigned int _size, unsigned int _BufferType)
 {
+	this->QueueError = false;
 	this->CreateQueue(_size);
 	this->size = _size;
 	this->WrPtr = 0;
@@ -100,9 +65,17 @@ Buffers::Buffers(unsigned int _NrPtrs, unsigned int _size, unsigned int _BufferT
 			this->RdPtr[i] = 0;
 			this->QLoad[i] = 0;
 		}
-	InitializeCriticalSectionAndSpinCount(&Crit1, 0x0001FFFF);		// 128k Spin is added so a thread does not use an expensive Sleep while the 
-																	// chance is high it will be able to continue within a few cycles
-																	// This improves the speed dramatically on very small Threaded Reads or Writes
+
+	SYSTEM_INFO sysinfo;
+	GetSystemInfo( &sysinfo );
+	if (sysinfo.dwNumberOfProcessors > 1)
+	{	 // MultiCore
+		InitializeCriticalSectionAndSpinCount(&Crit1, 0x0001FFFF);	// 128k Spin is added so a thread does not use an expensive Sleep while the 
+	}																// chance is high it will be able to continue within a few cycles
+	else															// This improves the speed dramatically on very small Threaded Reads or Writes
+	{	// SingleCore
+		InitializeCriticalSectionAndSpinCount(&Crit1, 0x00000000);
+	}
 }
 
 //Destructor
@@ -167,10 +140,13 @@ int Buffers::CreateQueue(unsigned int size)
 	try
 	{
 		this->CQ = new unsigned char[size];
+		if (!this->CQ) throw -1;
 	}
 
 	catch (...)
 	{
+		this->CQ = nullptr;
+		this->QueueError = true;
 		return -1;
 	}
 
@@ -215,8 +191,7 @@ int Buffers::Read (unsigned int NrPtr, unsigned int r, unsigned char * d)
 		{	// When not much data to write, or we're close at the wrap point, write byte-per-byte
 			unsigned int Small = r;
 
-			if (offset && (block != 0)) Small = block;	//"offset" lets us know that a blockwrite was unfinished due to lack of seq. space
-			if ((block == 0) && (Small > BLOCKSIZE_READ)) Small = 1;	// Write 1 byte to wrap and return to block writing if a lot of data is still coming
+			if (Small > BLOCKSIZE_READ && (Small-block) > BLOCKSIZE_READ) Small = block+1;
 
 			for (register unsigned int i=0;i<Small;i++) // Store counter in Cache if possible
 			{
@@ -297,8 +272,7 @@ int Buffers::Write (unsigned int w, unsigned char * d)
 			{	// When not much data to write, or we're close at the wrap point, write byte-per-byte
 				unsigned int Small = w;
 
-				if (offset && (block != 0)) Small = block;	//"offset" lets us know that a blockwrite was unfinished due to lack of seq. space
-				if ((block == 0) && (Small > BLOCKSIZE_WRITE)) Small = 1;	// Write 1 byte to wrap and return to block writing if a lot of data is still coming
+				if (Small > BLOCKSIZE_READ && (Small-block) > BLOCKSIZE_WRITE) Small = block+1;
 
 				for (register unsigned int i=0;i<Small;i++)	// Store counter in Cache if possible
 				{
@@ -340,8 +314,7 @@ int Buffers::Write (unsigned int w, unsigned char * d)
 				{	// When not much data to write, or we're close at the wrap point, write byte-per-byte
 					unsigned int Small = w;
 
-					if (offset && (block != 0)) Small = block;	//"offset" lets us know that a blockwrite was unfinished due to lack of seq. space
-					if ((block == 0) && (Small > BLOCKSIZE_WRITE)) Small = 1;	// Write 1 byte to wrap and return to block writing if a lot of data is still coming
+					if (Small > BLOCKSIZE_READ && (Small-block) > BLOCKSIZE_WRITE) Small = block+1;
 
 					for (register unsigned int i=0;i<Small;i++)	// Store counter in Cache if possible
 					{
@@ -437,6 +410,16 @@ unsigned int CALLING_CONVENTION BufferCreate (unsigned int size, unsigned int bu
 	if (buffertype > 1) return 0;	// Unknown Buffertype
 	
 	Buffers * NewBuffer = new Buffers(NrReadChannels, size, buffertype);
+	if (NewBuffer)
+	{
+		if (NewBuffer->QueueError)
+		{
+			delete NewBuffer;
+			i=0;
+			NewBuffer = nullptr;
+		}
+	}
+	
 	i = (unsigned int) NewBuffer;
 	return i;
 }

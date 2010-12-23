@@ -1,3 +1,9 @@
+0.6.9
+-----
+	- Critical Fix : DLL crashed when not enough memory could be allocated.
+	- Improved : Faster treaded access speed for Single Core machines
+	- Improved : Speed increased ~20% when R/W small blocksizes (see benchmarks)
+
 0.6.8
 -----
 	- Added : Doc. -> Benchmarks

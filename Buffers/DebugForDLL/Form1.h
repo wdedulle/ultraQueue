@@ -236,8 +236,8 @@ private: System::Void button4_Click(System::Object^  sender, System::EventArgs^ 
 		DWORD tstart, tend, tdif;
 
 		unsigned int writesizesmall=256;
-		unsigned int start_blocksizesmall=1;
-		unsigned int stop_blocksizesmall=256;
+		unsigned int start_blocksizesmall=8;
+		unsigned int stop_blocksizesmall=8;
 
 		unsigned int writesizelarge=32768;
 		unsigned int start_blocksizelarge=512;
@@ -246,14 +246,14 @@ private: System::Void button4_Click(System::Object^  sender, System::EventArgs^ 
 bool bd = false;
 unsigned int resultptr =0;
 
-bool dosmall = false;
+bool dosmall = true;
 bool dolarge = false;
 
 
 
 if (dosmall)
 {
-	v = BufferCreate(64*1048576,FIFO,32);	// function(size,buffertype,ReadChannels)
+	v = BufferCreate(64*1048576,FIFO,1);	// function(size,buffertype,ReadChannels)
 
 	for (unsigned int loops=start_blocksizesmall;loops<=stop_blocksizesmall;loops *= 2)
 	{
@@ -314,17 +314,27 @@ int stat=0;
 
 v = BufferCreate(1024*1048576,FIFO,32);	// function(size,buffertype,ReadChannels)
 
+unsigned char bz = 0x30;
+
+for (unsigned int i=0;i<sizeof a;i++)
+{
+	a[i]=bz;
+	bz++;
+	if (bz == 0x3A) bz = 0x30;
+}
+
 for (unsigned int i=0;i<4096;i++)
 	{
 		test = BufferWrite(v,sizeof a,a);
 	}
 
+memset (a,0,sizeof a);
 
-for (unsigned int i=1;i<=(256*1024);i*=2)
+for (unsigned int i=4;i<=4;i *= 2)
 	{
 		tstart = GetTickCount();	// Get begintime
 
-		for (unsigned int j=0;j<((1024*1024)/i)*1024;j++)
+		for (unsigned int j=0;j<((512*1024)/i)*1024;j++)
 		{
 			stat = BufferRead (v, ReadPtr, i, a);
 		}
@@ -332,11 +342,10 @@ for (unsigned int i=1;i<=(256*1024);i*=2)
 		tend = GetTickCount();	// Get end time
 		tdif = tend - tstart; //will now have the time elapsed since the start of the call	(performance measurement
 
-		ReadResults[ReadResultsPtr] = ((double)1024/(double)tdif)*1000;
+		ReadResults[ReadResultsPtr] = ((double)512/(double)tdif)*1000;
 		ReadResultsPtr++;
 		ReadPtr++;
 	}
-
 
 results[23]=0;
 ReadResults[23]=0;
