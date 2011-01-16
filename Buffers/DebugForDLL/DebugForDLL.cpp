@@ -2,7 +2,7 @@
 
 #include "stdafx.h"
 #include "Form1.h"
-#include "Buffers.h"
+#include "UltraQueue.h"
 
 using namespace DebugForDLL;
 

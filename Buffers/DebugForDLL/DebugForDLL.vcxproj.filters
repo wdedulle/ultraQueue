@@ -53,6 +53,6 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Library Include="..\Release\Buffers.lib" />
+    <Library Include="..\Debug\UltraQueue.lib" />
   </ItemGroup>
 </Project>

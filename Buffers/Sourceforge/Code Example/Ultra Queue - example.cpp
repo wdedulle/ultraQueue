@@ -9,6 +9,8 @@ int main ()
 	unsigned int Buffer2 = 0;
 
 	int status=0;
+	int GetErrorQ1=0;
+	int GetErrorQ2=0;
 
 	unsigned char TempBuffer[2048];
 	unsigned char Small[128] = {0};
@@ -18,13 +20,30 @@ int main ()
 	bool Flag = false;
 
 	//Creating Buffers
-	Buffer1 = BufferCreate (1*1048576,FIFO, 2);	// Create a queue :  1MB in size , FIFO , 2 ReadChannels (Channels : 0 & 1)
-	Buffer2 = BufferCreate (128,RING, 1);		// Create a queue :  128 Bytes in size , RING , 1 ReadChannels (Channel : 0)
+	Buffer1 = BufferCreate (1*1048576,FIFO, 2, &GetErrorQ1);	// Create a queue :  1MB in size , FIFO , 2 ReadChannels (Channels : 0 & 1) , Error
+	Buffer2 = BufferCreate (128,RING, 1, &GetErrorQ2);		// Create a queue :  128 Bytes in size , RING , 1 ReadChannels (Channel : 0), Error
 
 
-	If (Buffer1 == 0) PrintError();	// When succeeded, "Buffer1" will be > 0
-	If (Buffer2 == 0) PrintError();	// When succeeded, "Buffer2" will be > 0
-
+	If (Buffer1 == 0)	// When succeeded, "Buffer1" will be > 0	;	In case of Error, handle this specific error
+		{
+			switch (GetErrorQ1)
+			{
+				default : DisplayMessage("Unknown error occured"); break;
+				case -1 : DisplayMessage("You must create a queue with a least 1 ReadChannel"); break;
+				case -2 : DisplayMessage("Requested Buffertype is unknown, please select a FIFO or RING queue type"); break;
+				case -3 : DisplayMessage("Not enough memory available to create your queue, Lower the size and try again"); break;
+			}
+		}
+	If (Buffer2 == 0) PrintError(GetErrorQ2);	// When succeeded, "Buffer2" will be > 0
+		{
+			switch (GetErrorQ2)
+			{
+				default : DisplayMessage("Unknown error occured"); break;
+				case -1 : DisplayMessage("You must create a queue with a least 1 ReadChannel"); break;
+				case -2 : DisplayMessage("Requested Buffertype is unknown, please select a FIFO or RING queue type"); break;
+				case -3 : DisplayMessage("Not enough memory available to create your queue, Lower the size and try again"); break;
+			}
+		}
 
 	//Writing to buffers
 	status = BufferWrite (Buffer1, 64, TempBuffer);	// Write First 64 bytes from TempBuffer to Buffer1

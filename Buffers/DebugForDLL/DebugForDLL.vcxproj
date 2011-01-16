@@ -23,6 +23,7 @@
     </SccLocalPath>
     <SccProvider>
     </SccProvider>
+    <ProjectName>UQ Benchmark</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -38,6 +39,7 @@
     <CLRSupport>true</CLRSupport>
     <CharacterSet>Unicode</CharacterSet>
     <PlatformToolset>v100</PlatformToolset>
+    <WholeProgramOptimization>false</WholeProgramOptimization>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -82,7 +84,11 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <CompileAsManaged>true</CompileAsManaged>
       <AdditionalIncludeDirectories>$(SolutionDir)\Buffers</AdditionalIncludeDirectories>
-      <Optimization>Disabled</Optimization>
+      <Optimization>Full</Optimization>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <OmitFramePointers>true</OmitFramePointers>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -129,7 +135,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Library Include="..\Release\Buffers.lib" />
+    <Library Include="..\Debug\UltraQueue.lib" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

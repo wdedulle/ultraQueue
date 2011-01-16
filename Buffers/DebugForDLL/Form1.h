@@ -1,9 +1,10 @@
 #pragma once
 
 #include <Windows.h>
-#include "Buffers.h"
+#include "UltraQueue.h"
 #include <string.h>
 
+unsigned int buffernrshared=0;
 
 namespace DebugForDLL {
 
@@ -14,6 +15,9 @@ namespace DebugForDLL {
 	using namespace System::Data;
 	using namespace System::Drawing;
 	using namespace System::Threading;
+
+	delegate void SetTextDelegate(String^ text);
+
 
 	/// <summary>
 	/// Summary for Form1
@@ -40,16 +44,25 @@ namespace DebugForDLL {
 				delete components;
 			}
 		}
-	private: System::Windows::Forms::Button^  button1;
+
 	protected: 
-	private: System::Windows::Forms::Button^  button2;
-	private: System::Windows::Forms::Button^  button3;
-	private: System::IO::Ports::SerialPort^  serialPort1;
-	private: System::Windows::Forms::ProgressBar^  progressBar1;
-	private: System::Windows::Forms::Button^  button4;
+
+	protected: 
+
+
+
+
+
 	private: System::Windows::Forms::TextBox^  textBox1;
-	private: System::Windows::Forms::Label^  label1;
-	private: System::Windows::Forms::Button^  button5;
+	private: System::ComponentModel::BackgroundWorker^  backgroundWorker1;
+	private: System::Windows::Forms::Button^  button2;
+	private: System::Windows::Forms::Button^  StartThreaded;
+	private: System::ComponentModel::BackgroundWorker^  backgroundWorker2;
+
+
+
+
+
 	private: System::ComponentModel::IContainer^  components;
 
 	private:
@@ -65,166 +78,106 @@ namespace DebugForDLL {
 		/// </summary>
 		void InitializeComponent(void)
 		{
-			this->components = (gcnew System::ComponentModel::Container());
-			this->button1 = (gcnew System::Windows::Forms::Button());
-			this->button2 = (gcnew System::Windows::Forms::Button());
-			this->button3 = (gcnew System::Windows::Forms::Button());
-			this->serialPort1 = (gcnew System::IO::Ports::SerialPort(this->components));
-			this->progressBar1 = (gcnew System::Windows::Forms::ProgressBar());
-			this->button4 = (gcnew System::Windows::Forms::Button());
 			this->textBox1 = (gcnew System::Windows::Forms::TextBox());
-			this->label1 = (gcnew System::Windows::Forms::Label());
-			this->button5 = (gcnew System::Windows::Forms::Button());
+			this->backgroundWorker1 = (gcnew System::ComponentModel::BackgroundWorker());
+			this->button2 = (gcnew System::Windows::Forms::Button());
+			this->StartThreaded = (gcnew System::Windows::Forms::Button());
+			this->backgroundWorker2 = (gcnew System::ComponentModel::BackgroundWorker());
 			this->SuspendLayout();
-			// 
-			// button1
-			// 
-			this->button1->Location = System::Drawing::Point(12, 12);
-			this->button1->Name = L"button1";
-			this->button1->Size = System::Drawing::Size(75, 23);
-			this->button1->TabIndex = 0;
-			this->button1->Text = L"Create";
-			this->button1->UseVisualStyleBackColor = true;
-			this->button1->Click += gcnew System::EventHandler(this, &Form1::button1_Click);
-			// 
-			// button2
-			// 
-			this->button2->Location = System::Drawing::Point(145, 72);
-			this->button2->Name = L"button2";
-			this->button2->Size = System::Drawing::Size(75, 23);
-			this->button2->TabIndex = 1;
-			this->button2->Text = L"Flush Buffer";
-			this->button2->UseVisualStyleBackColor = true;
-			this->button2->Click += gcnew System::EventHandler(this, &Form1::button2_Click);
-			// 
-			// button3
-			// 
-			this->button3->Location = System::Drawing::Point(12, 72);
-			this->button3->Name = L"button3";
-			this->button3->Size = System::Drawing::Size(104, 23);
-			this->button3->TabIndex = 2;
-			this->button3->Text = L"Read From Buffer";
-			this->button3->UseVisualStyleBackColor = true;
-			this->button3->Click += gcnew System::EventHandler(this, &Form1::button3_Click);
-			// 
-			// serialPort1
-			// 
-			this->serialPort1->BaudRate = 4800;
-			this->serialPort1->PortName = L"COM4";
-			// 
-			// progressBar1
-			// 
-			this->progressBar1->Location = System::Drawing::Point(154, 12);
-			this->progressBar1->Name = L"progressBar1";
-			this->progressBar1->Size = System::Drawing::Size(648, 23);
-			this->progressBar1->TabIndex = 3;
-			this->progressBar1->Click += gcnew System::EventHandler(this, &Form1::progressBar1_Click);
-			// 
-			// button4
-			// 
-			this->button4->Location = System::Drawing::Point(12, 41);
-			this->button4->Name = L"button4";
-			this->button4->Size = System::Drawing::Size(104, 23);
-			this->button4->TabIndex = 4;
-			this->button4->Text = L"Stress";
-			this->button4->UseVisualStyleBackColor = true;
-			this->button4->Click += gcnew System::EventHandler(this, &Form1::button4_Click);
 			// 
 			// textBox1
 			// 
 			this->textBox1->AcceptsReturn = true;
-			this->textBox1->Location = System::Drawing::Point(35, 117);
+			this->textBox1->Location = System::Drawing::Point(25, 60);
 			this->textBox1->Multiline = true;
 			this->textBox1->Name = L"textBox1";
+			this->textBox1->ReadOnly = true;
 			this->textBox1->ScrollBars = System::Windows::Forms::ScrollBars::Vertical;
-			this->textBox1->Size = System::Drawing::Size(1017, 459);
+			this->textBox1->Size = System::Drawing::Size(700, 680);
 			this->textBox1->TabIndex = 5;
 			// 
-			// label1
+			// backgroundWorker1
 			// 
-			this->label1->AutoSize = true;
-			this->label1->Location = System::Drawing::Point(411, 41);
-			this->label1->Name = L"label1";
-			this->label1->Size = System::Drawing::Size(79, 13);
-			this->label1->TabIndex = 6;
-			this->label1->Text = L"Buffer Capacity";
-			this->label1->Click += gcnew System::EventHandler(this, &Form1::label1_Click);
+			this->backgroundWorker1->DoWork += gcnew System::ComponentModel::DoWorkEventHandler(this, &Form1::backgroundWorker1_DoWork);
 			// 
-			// button5
+			// button2
 			// 
-			this->button5->Location = System::Drawing::Point(414, 88);
-			this->button5->Name = L"button5";
-			this->button5->Size = System::Drawing::Size(100, 23);
-			this->button5->TabIndex = 7;
-			this->button5->Text = L"Clear Window";
-			this->button5->UseVisualStyleBackColor = true;
-			this->button5->Click += gcnew System::EventHandler(this, &Form1::button5_Click);
+			this->button2->Location = System::Drawing::Point(25, 12);
+			this->button2->Name = L"button2";
+			this->button2->Size = System::Drawing::Size(75, 23);
+			this->button2->TabIndex = 6;
+			this->button2->Text = L"Start Stress";
+			this->button2->UseVisualStyleBackColor = true;
+			this->button2->Click += gcnew System::EventHandler(this, &Form1::button2_Click);
+			// 
+			// StartThreaded
+			// 
+			this->StartThreaded->Location = System::Drawing::Point(107, 11);
+			this->StartThreaded->Name = L"StartThreaded";
+			this->StartThreaded->Size = System::Drawing::Size(125, 23);
+			this->StartThreaded->TabIndex = 7;
+			this->StartThreaded->Text = L"Start Threaded Stress";
+			this->StartThreaded->UseVisualStyleBackColor = true;
+			this->StartThreaded->Click += gcnew System::EventHandler(this, &Form1::StartThreaded_Click);
+			// 
+			// backgroundWorker2
+			// 
+			this->backgroundWorker2->DoWork += gcnew System::ComponentModel::DoWorkEventHandler(this, &Form1::backgroundWorker2_DoWork);
 			// 
 			// Form1
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
-			this->ClientSize = System::Drawing::Size(1064, 588);
-			this->Controls->Add(this->button5);
-			this->Controls->Add(this->label1);
-			this->Controls->Add(this->textBox1);
-			this->Controls->Add(this->button4);
-			this->Controls->Add(this->progressBar1);
-			this->Controls->Add(this->button3);
+			this->ClientSize = System::Drawing::Size(753, 770);
+			this->Controls->Add(this->StartThreaded);
 			this->Controls->Add(this->button2);
-			this->Controls->Add(this->button1);
+			this->Controls->Add(this->textBox1);
 			this->Name = L"Form1";
-			this->Text = L"Form1";
+			this->Text = L"UltraQueue 0.7.0 Stress";
 			this->ResumeLayout(false);
 			this->PerformLayout();
 
 		}
 #pragma endregion
-	private: System::Void button1_Click(System::Object^  sender, System::EventArgs^  e)
-{
-	unsigned int t;
 
-	int test=0;
-	unsigned char aa[24];
-	unsigned char bb[24];
-	double space_used_channel_1 = 0;
-	double space_used_channel_2 = 0;
-	double space_free_channel_1 = 0;
-	double space_free_channel_2 = 0;
-	
-	
-	t= BufferCreate(16,1,2);	// function(size,buffertype,ReadChannels)
-	if (t)
-	{
-		memset (aa,0,sizeof aa);
-		memset (bb,0,sizeof bb);
-		//strcpy(aa,"abcdefghijklmnopqrs");
+    private:
+        void SetText(String^ text)
+        {
+            // InvokeRequired required compares the thread ID of the
+            // calling thread to the thread ID of the creating thread.
+            // If these threads are different, it returns true.
+            if (this->textBox1->InvokeRequired)
+            {
+                SetTextDelegate^ d = 
+                    gcnew SetTextDelegate(this, &Form1::SetText);
+                this->Invoke(d, gcnew array<Object^> { text });
+            }
+            else
+            {
+                this->textBox1->Text = text;
+            }
+        }
 
-		test = BufferWrite(t,10,aa);	//BufferWrite (unsigned int buffer_nr, unsigned int NrOfBytes, char * Data);
-		test = BufferRead(t,0,5,bb);		//BUFFERS_API int CALLING_CONVENTION BufferRead (unsigned int buffer_nr, unsigned short ReadChannel, unsigned int NrOfBytes, char * Data);
-		
-		space_used_channel_1 = BufferSpaceUsed_Percentage (t, 0);
-		space_free_channel_1 = BufferSpaceAvailable_Percentage (t, 0);
+		    private:
+        void AppendText(String^ text)
+        {
+            // InvokeRequired required compares the thread ID of the
+            // calling thread to the thread ID of the creating thread.
+            // If these threads are different, it returns true.
+            if (this->textBox1->InvokeRequired)
+            {
+                SetTextDelegate^ d = 
+                    gcnew SetTextDelegate(this, &Form1::AppendText);
+                this->Invoke(d, gcnew array<Object^> { text });
+            }
+            else
+            {
+                this->textBox1->AppendText(text);
+            }
+        }
 
-		space_used_channel_2 = BufferSpaceUsed_Percentage (t, 1);
-		space_free_channel_2 = BufferSpaceAvailable_Percentage (t, 1);
-
-
-		textBox1->Text = "done";
-	}
-
-	
-}
-	private: System::Void button2_Click(System::Object^  sender, System::EventArgs^  e) {
-
-
-				 				 
-			 }
-	private: System::Void button3_Click(System::Object^  sender, System::EventArgs^  e)
-			 {
-
-			 }
-private: System::Void button4_Click(System::Object^  sender, System::EventArgs^  e) {
+private: System::Void backgroundWorker1_DoWork(System::Object^  sender, System::ComponentModel::DoWorkEventArgs^  e)
+		 {
 
 		unsigned int v =0;
 		unsigned char a[262144];
@@ -236,27 +189,44 @@ private: System::Void button4_Click(System::Object^  sender, System::EventArgs^ 
 		DWORD tstart, tend, tdif;
 
 		unsigned int writesizesmall=256;
-		unsigned int start_blocksizesmall=8;
-		unsigned int stop_blocksizesmall=8;
+		unsigned int start_blocksizesmall=1;
+		unsigned int stop_blocksizesmall=32;
 
-		unsigned int writesizelarge=32768;
-		unsigned int start_blocksizelarge=512;
+		unsigned int writesizelarge=16384;
+		unsigned int start_blocksizelarge=64;
 		unsigned int stop_blocksizelarge=262144;
+
+		int CreateStatus=0;
 
 bool bd = false;
 unsigned int resultptr =0;
+unsigned int converter=0;
 
 bool dosmall = true;
-bool dolarge = false;
+bool dolarge = true;
 
-
+this->SetText("");
+this->SetText("WRITE benchmarks\n");
+this->AppendText("\n");
 
 if (dosmall)
 {
-	v = BufferCreate(64*1048576,FIFO,1);	// function(size,buffertype,ReadChannels)
+	v = BufferCreate(64*1048576,FIFO,1,&CreateStatus);	// function(size,buffertype,ReadChannels)
 
+	//if (!v)
+	//{
+	//	this->AppendText("Not enough memory could be allocated to start the small block tests");
+	//	break;
+	//}
+	this->AppendText("Writing ");
+	this->AppendText(writesizesmall.ToString());
+	this->AppendText("MB to a 64MB FIFO for each blocksize");
+	this->AppendText("\n");
+	
 	for (unsigned int loops=start_blocksizesmall;loops<=stop_blocksizesmall;loops *= 2)
 	{
+		this->AppendText(loops.ToString());
+		this->AppendText(" Bytes : ");
 			tstart = GetTickCount();	// Get begintime
 
 			for (unsigned int i=0;i<(1048576*writesizesmall)/loops;i++)
@@ -269,6 +239,9 @@ if (dosmall)
 			tdif = tend - tstart; //will now have the time elapsed since the start of the call	(performance measurement
 
 			results[resultptr] = ((double)writesizesmall/(double)tdif)*1000;
+			converter = results[resultptr];
+			this->AppendText(converter.ToString());
+			this->AppendText(" MB/s\n");
 			resultptr++;
 
 			BufferFlush(v,-1);
@@ -279,10 +252,23 @@ if (dosmall)
 
 if (dolarge)
 {
-	v = BufferCreate(512*1048576,FIFO,32);	// function(size,buffertype,ReadChannels)
+	v = BufferCreate(512*1048576,FIFO,1,&CreateStatus);	// function(size,buffertype,ReadChannels)
+
+	//if (!v)
+	//{
+	//	this->AppendText("Not enough memory could be allocated to start the Large block tests");
+	//	break;
+	//}
+	this->AppendText("\n");
+	this->AppendText("Writing ");
+	this->AppendText((writesizelarge/1024).ToString());
+	this->AppendText("GB to a 512MB FIFO for each blocksize");
+	this->AppendText("\n");
 
 	for (unsigned int loops=start_blocksizelarge;loops<=stop_blocksizelarge;loops *= 2)
 	{
+		this->AppendText(loops.ToString());
+		this->AppendText(" Bytes : ");
 			tstart = GetTickCount();	// Get begintime
 
 			for (unsigned int i=0;i<((1024*writesizelarge)/loops)*1024;i++)
@@ -295,6 +281,9 @@ if (dolarge)
 			tdif = tend - tstart; //will now have the time elapsed since the start of the call	(performance measurement
 
 			results[resultptr] = ((double)writesizelarge/(double)tdif)*1000;
+			converter = results[resultptr];
+			this->AppendText(converter.ToString());
+			this->AppendText(" MB/s\n");
 			resultptr++;
 
 			BufferFlush(v,-1);
@@ -307,13 +296,21 @@ resultptr	=	0;
 
 //Read benchmarks
 
+this->AppendText(" \n");
+this->AppendText(" \n");
+this->AppendText("READ benchmarks\n");
+this->AppendText(" \n");
+
 double ReadResults[24] = {0};
 unsigned int ReadResultsPtr=0;
 unsigned int ReadPtr=0;
 int stat=0;
 
-v = BufferCreate(1024*1048576,FIFO,32);	// function(size,buffertype,ReadChannels)
+v = BufferCreate(512*1048576,FIFO,32,&CreateStatus);	// function(size,buffertype,ReadChannels)
 
+//if (!v) break;
+
+// else{
 unsigned char bz = 0x30;
 
 for (unsigned int i=0;i<sizeof a;i++)
@@ -330,8 +327,12 @@ for (unsigned int i=0;i<4096;i++)
 
 memset (a,0,sizeof a);
 
-for (unsigned int i=4;i<=4;i *= 2)
+this->AppendText("Reading 512MB from a FIFO for each blocksize .. :\n");
+
+for (unsigned int i=1;i<=262144;i *= 2)
 	{
+		this->AppendText(i.ToString());
+		this->AppendText(" Bytes : ");
 		tstart = GetTickCount();	// Get begintime
 
 		for (unsigned int j=0;j<((512*1024)/i)*1024;j++)
@@ -343,6 +344,9 @@ for (unsigned int i=4;i<=4;i *= 2)
 		tdif = tend - tstart; //will now have the time elapsed since the start of the call	(performance measurement
 
 		ReadResults[ReadResultsPtr] = ((double)512/(double)tdif)*1000;
+		converter = ReadResults[ReadResultsPtr];
+		this->AppendText(converter.ToString());
+		this->AppendText(" MB/s\n");
 		ReadResultsPtr++;
 		ReadPtr++;
 	}
@@ -350,19 +354,129 @@ for (unsigned int i=4;i<=4;i *= 2)
 results[23]=0;
 ReadResults[23]=0;
 
-textBox1->Text = "done";
+BufferRelease(v);
+
+//}	//end else
+this->AppendText("\n");
+this->AppendText("Finished !");
 
 
-		 }
-private: System::Void progressBar1_Click(System::Object^  sender, System::EventArgs^  e) {
-		 }
-private: System::Void label1_Click(System::Object^  sender, System::EventArgs^  e) {
-		 }
-private: System::Void button5_Click(System::Object^  sender, System::EventArgs^  e) {
 
-			 textBox1->Text = "";
 		 }
+private: System::Void button2_Click(System::Object^  sender, System::EventArgs^  e) {
+
+			 backgroundWorker1->RunWorkerAsync();
+		 }
+
+
+ref class ThreadBench
+{
+public:
+   static void DoWork()
+   {
+	unsigned int buffernr=0;
+	unsigned char a[262144];
+	int test=0;
+	int CreateStatus=0;
+
+	
+	if (!buffernrshared) buffernr = BufferCreate(32*1048576,FIFO,1,&CreateStatus);	// function(size,buffertype,ReadChannels)
+
+	if (buffernr)
+	{
+		for (unsigned int i=0;i<65536;i++)
+		{
+		test = BufferWrite(buffernr,sizeof a,a);
+		}
+	}
+
+	else
+	{
+		for (unsigned int i=0;i<65536;i++)
+		{
+			test = BufferWrite(buffernrshared,sizeof a,a);
+		}
+	}
+
+
+	if (buffernr) BufferRelease(buffernr);
+   }
+
 };
 
+
+
+private: System::Void StartThreaded_Click(System::Object^  sender, System::EventArgs^  e) {
+
+		backgroundWorker2->RunWorkerAsync();
 }
 
+private: System::Void backgroundWorker2_DoWork(System::Object^  sender, System::ComponentModel::DoWorkEventArgs^  e) {
+
+		DWORD tstart, tend, tdif;
+		double result;
+		unsigned int convert;
+		int CreateStatus=0;
+
+		tstart = GetTickCount();
+							
+		this->SetText("");
+		this->AppendText("Starting benchmark with 8 Threads.");
+		this->AppendText("\n");
+		this->AppendText("Each Thread writes 16GB to it's own 32MB FIFO buffer in blocks of 256kB");
+		this->AppendText("\n");
+
+		buffernrshared = BufferCreate(128*1048576,FIFO,1,&CreateStatus);	// function(size,buffertype,ReadChannels)
+
+		ThreadStart^ myThreadDelegate = gcnew ThreadStart( &ThreadBench::DoWork );
+		
+		Thread^ Thread1 = gcnew Thread( myThreadDelegate );
+		Thread^ Thread2 = gcnew Thread( myThreadDelegate );
+		Thread^ Thread3 = gcnew Thread( myThreadDelegate );
+		Thread^ Thread4 = gcnew Thread( myThreadDelegate );
+		Thread^ Thread5 = gcnew Thread( myThreadDelegate );
+		Thread^ Thread6 = gcnew Thread( myThreadDelegate );
+		Thread^ Thread7 = gcnew Thread( myThreadDelegate );
+		Thread^ Thread8 = gcnew Thread( myThreadDelegate );
+
+		Thread1->Start();	// Start all Threads
+		Thread2->Start();
+		Thread3->Start();
+		Thread4->Start();
+		Thread5->Start();
+		Thread6->Start();
+		Thread7->Start();
+		Thread8->Start();
+
+		Thread1->Join();	// Wait for all threads to finish
+		Thread2->Join();
+		Thread3->Join();
+		Thread4->Join();
+		Thread5->Join();
+		Thread6->Join();
+		Thread7->Join();
+		Thread8->Join();
+
+		tend = GetTickCount();	// Get end time
+		tdif = tend - tstart; //will now have the time elapsed since the start of the call	(performance measurement
+
+		result = ((double)131072/(double)tdif)*1000;
+
+		convert = result;
+				
+		this->AppendText("All Threads Finished");
+		this->AppendText(" \n");
+		this->AppendText(" \n");
+		this->AppendText("Total Write Speed : ");
+
+		this->AppendText(convert.ToString());
+		this->AppendText(" MB/s\n");
+
+		if (buffernrshared) BufferRelease(buffernrshared);	// function(size,buffertype,ReadChannels)
+
+
+
+
+		 }
+};
+}

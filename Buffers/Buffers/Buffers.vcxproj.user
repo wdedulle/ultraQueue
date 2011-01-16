@@ -8,7 +8,7 @@
     <LocalDebuggerDebuggerType>Mixed</LocalDebuggerDebuggerType>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <LocalDebuggerCommand>$(OutputPath)/DebugForDLL.exe</LocalDebuggerCommand>
+    <LocalDebuggerCommand>C:\Users\xback\Documents\Visual Studio 2010\Projects\Buffers\Release\UQ Benchmark.exe</LocalDebuggerCommand>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
     <LocalDebuggerDebuggerType>Mixed</LocalDebuggerDebuggerType>
     <LocalDebuggerWorkingDirectory>$(TargetDir)</LocalDebuggerWorkingDirectory>

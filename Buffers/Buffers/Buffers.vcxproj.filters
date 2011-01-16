@@ -25,7 +25,7 @@
     <ClInclude Include="targetver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Buffers.h">
+    <ClInclude Include="UltraQueue.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -33,10 +33,10 @@
     <ClCompile Include="stdafx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Buffers.cpp">
+    <ClCompile Include="dllmain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="dllmain.cpp">
+    <ClCompile Include="UltraQueue.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

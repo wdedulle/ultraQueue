@@ -1,3 +1,16 @@
+0.7.0
+-----
+	- Changed : Renamed project files from "Buffers.xxx" to "UltraQueue.xxx" :)
+	- Fix : BufferCreate() could cause a mem. access violation in very specific low memory environments.
+	- Added : BufferCreate() could return 0 for multiple reasons.
+		  new param. (*Status) was added for error handling. (See "UltraQueue.h" for details)
+	- Improved : Finetuned highly threaded access with small blocksizes (~280% speed improvement)
+	- Improved : Improved Threaded performance for HyperThreading-enabled CPU's
+	- Improved : CPU load decreased in high-threaded situations (~50%)
+	- Improved : Queue access latency lowered by ~35% in specific high threaded situations.
+	- Improved : Slightly optimized clean-up code on queue creating errors.
+	- Changed : Code Example file has been updated with new parameter in BufferCreate().
+
 0.6.9
 -----
 	- Critical Fix : DLL crashed when not enough memory could be allocated.
