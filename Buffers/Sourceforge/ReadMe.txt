@@ -1,3 +1,15 @@
+Kindly rate this project to help me further improve this project !
+Feel free to post a ticket
+
+
+0.7.1
+-----
+	- Fix : BufferRead() could never return "-3" (Queue is Empty), even if it was empty.
+	- Improved : Updated max nr of Read Channels from 32 to 128.
+		     keep in mind that every additional Read Channel costs a little bit extra CPU power.
+		     See benchmarks for details.
+		     It's advised to not make more ReadChannels than you need, in order to have max performance.
+
 0.7.0
 -----
 	- Changed : Renamed project files from "Buffers.xxx" to "UltraQueue.xxx" :)

@@ -202,167 +202,179 @@ bool bd = false;
 unsigned int resultptr =0;
 unsigned int converter=0;
 
+bool dowrite = true;
 bool dosmall = true;
 bool dolarge = true;
+unsigned int BenchNrOfReadChan = 32;
+
+bool doread = false;
 
 this->SetText("");
 this->SetText("WRITE benchmarks\n");
 this->AppendText("\n");
 
-if (dosmall)
+if (dowrite)
 {
-	v = BufferCreate(64*1048576,FIFO,1,&CreateStatus);	// function(size,buffertype,ReadChannels)
+	if (dosmall)
+	{
+		v = BufferCreate(64*1048576,FIFO,BenchNrOfReadChan,&CreateStatus);	// function(size,buffertype,ReadChannels)
 
-	//if (!v)
-	//{
-	//	this->AppendText("Not enough memory could be allocated to start the small block tests");
-	//	break;
-	//}
-	this->AppendText("Writing ");
-	this->AppendText(writesizesmall.ToString());
-	this->AppendText("MB to a 64MB FIFO for each blocksize");
-	this->AppendText("\n");
+		//if (!v)
+		//{
+		//	this->AppendText("Not enough memory could be allocated to start the small block tests");
+		//	break;
+		//}
+		this->AppendText("Writing ");
+		this->AppendText(writesizesmall.ToString());
+		this->AppendText("MB to a 64MB FIFO for each blocksize");
+		this->AppendText("\n");
 	
-	for (unsigned int loops=start_blocksizesmall;loops<=stop_blocksizesmall;loops *= 2)
-	{
-		this->AppendText(loops.ToString());
-		this->AppendText(" Bytes : ");
-			tstart = GetTickCount();	// Get begintime
+		for (unsigned int loops=start_blocksizesmall;loops<=stop_blocksizesmall;loops *= 2)
+		{
+			this->AppendText(loops.ToString());
+			this->AppendText(" Bytes : ");
+				tstart = GetTickCount();	// Get begintime
 
-			for (unsigned int i=0;i<(1048576*writesizesmall)/loops;i++)
-			{
-				test = BufferWrite(v,loops,a);
-			}
+				for (unsigned int i=0;i<(1048576*writesizesmall)/loops;++i)
+				{
+					test = BufferWrite(v,loops,a);
+				}
 
-			tend = GetTickCount();	// Get end time
+				tend = GetTickCount();	// Get end time
 
-			tdif = tend - tstart; //will now have the time elapsed since the start of the call	(performance measurement
+				tdif = tend - tstart; //will now have the time elapsed since the start of the call	(performance measurement
 
-			results[resultptr] = ((double)writesizesmall/(double)tdif)*1000;
-			converter = results[resultptr];
-			this->AppendText(converter.ToString());
-			this->AppendText(" MB/s\n");
-			resultptr++;
+				results[resultptr] = ((double)writesizesmall/(double)tdif)*1000;
+				converter = results[resultptr];
+				this->AppendText(converter.ToString());
+				this->AppendText(" MB/s\n");
+				resultptr++;
 
-			BufferFlush(v,-1);
+				BufferFlush(v,-1);
+		}
+
+		BufferRelease(v);
 	}
 
-	BufferRelease(v);
-}
-
-if (dolarge)
-{
-	v = BufferCreate(512*1048576,FIFO,1,&CreateStatus);	// function(size,buffertype,ReadChannels)
-
-	//if (!v)
-	//{
-	//	this->AppendText("Not enough memory could be allocated to start the Large block tests");
-	//	break;
-	//}
-	this->AppendText("\n");
-	this->AppendText("Writing ");
-	this->AppendText((writesizelarge/1024).ToString());
-	this->AppendText("GB to a 512MB FIFO for each blocksize");
-	this->AppendText("\n");
-
-	for (unsigned int loops=start_blocksizelarge;loops<=stop_blocksizelarge;loops *= 2)
+	if (dolarge)
 	{
-		this->AppendText(loops.ToString());
-		this->AppendText(" Bytes : ");
-			tstart = GetTickCount();	// Get begintime
+		v = BufferCreate(512*1048576,FIFO,BenchNrOfReadChan,&CreateStatus);	// function(size,buffertype,ReadChannels,status)
 
-			for (unsigned int i=0;i<((1024*writesizelarge)/loops)*1024;i++)
-			{
-				test = BufferWrite(v,loops,a);
-			}
+		//if (!v)
+		//{
+		//	this->AppendText("Not enough memory could be allocated to start the Large block tests");
+		//	break;
+		//}
+		this->AppendText("\n");
+		this->AppendText("Writing ");
+		this->AppendText((writesizelarge/1024).ToString());
+		this->AppendText("GB to a 512MB FIFO for each blocksize");
+		this->AppendText("\n");
 
-			tend = GetTickCount();	// Get end time
+		for (unsigned int loops=start_blocksizelarge;loops<=stop_blocksizelarge;loops *= 2)
+		{
+			this->AppendText(loops.ToString());
+			this->AppendText(" Bytes : ");
+				tstart = GetTickCount();	// Get begintime
 
-			tdif = tend - tstart; //will now have the time elapsed since the start of the call	(performance measurement
+				for (unsigned int i=0;i<((1024*writesizelarge)/loops)*1024;++i)
+				{
+					test = BufferWrite(v,loops,a);
+				}
 
-			results[resultptr] = ((double)writesizelarge/(double)tdif)*1000;
-			converter = results[resultptr];
-			this->AppendText(converter.ToString());
-			this->AppendText(" MB/s\n");
-			resultptr++;
+				tend = GetTickCount();	// Get end time
 
-			BufferFlush(v,-1);
+				tdif = tend - tstart; //will now have the time elapsed since the start of the call	(performance measurement
+
+				results[resultptr] = ((double)writesizelarge/(double)tdif)*1000;
+				converter = results[resultptr];
+				this->AppendText(converter.ToString());
+				this->AppendText(" MB/s\n");
+				resultptr++;
+
+				BufferFlush(v,-1);
+		}
+
+		BufferRelease(v);
 	}
 
-	BufferRelease(v);
+	resultptr	=	0;
 }
 
-resultptr	=	0;
 
 //Read benchmarks
 
-this->AppendText(" \n");
-this->AppendText(" \n");
-this->AppendText("READ benchmarks\n");
-this->AppendText(" \n");
-
-double ReadResults[24] = {0};
-unsigned int ReadResultsPtr=0;
-unsigned int ReadPtr=0;
-int stat=0;
-
-v = BufferCreate(512*1048576,FIFO,32,&CreateStatus);	// function(size,buffertype,ReadChannels)
-
-//if (!v) break;
-
-// else{
-unsigned char bz = 0x30;
-
-for (unsigned int i=0;i<sizeof a;i++)
+if (doread)
 {
-	a[i]=bz;
-	bz++;
-	if (bz == 0x3A) bz = 0x30;
+	this->AppendText(" \n");
+	this->AppendText(" \n");
+	this->AppendText("READ benchmarks\n");
+	this->AppendText(" \n");
+
+	double ReadResults[24] = {0};
+	unsigned int ReadResultsPtr=0;
+	unsigned int ReadPtr=0;
+	int stat=0;
+
+	v = BufferCreate(512*1048576,FIFO,32,&CreateStatus);	// function(size,buffertype,ReadChannels)
+
+	//if (!v) break;
+
+	// else{
+	unsigned char bz = 0x30;
+
+	for (unsigned int i=0;i<sizeof a;++i)
+	{
+		a[i]=bz;
+		bz++;
+		if (bz == 0x3A) bz = 0x30;
+	}
+
+	for (unsigned int i=0;i<4096;++i)
+		{
+			test = BufferWrite(v,sizeof a,a);
+		}
+
+	memset (a,0,sizeof a);
+
+	this->AppendText("Reading 512MB from a FIFO for each blocksize .. :\n");
+
+	for (unsigned int i=1;i<=262144;i *= 2)
+		{
+			this->AppendText(i.ToString());
+			this->AppendText(" Bytes : ");
+			tstart = GetTickCount();	// Get begintime
+
+			for (unsigned int j=0;j<((512*1024)/i)*1024;++j)
+			{
+				stat = BufferRead (v, ReadPtr, i, a);
+			}
+		
+			tend = GetTickCount();	// Get end time
+			tdif = tend - tstart; //will now have the time elapsed since the start of the call	(performance measurement
+
+			ReadResults[ReadResultsPtr] = ((double)512/(double)tdif)*1000;
+			converter = ReadResults[ReadResultsPtr];
+			this->AppendText(converter.ToString());
+			this->AppendText(" MB/s\n");
+			ReadResultsPtr++;
+			ReadPtr++;
+		}
+
+	results[23]=0;
+	ReadResults[23]=0;
+
+	BufferRelease(v);
+
+	//}	//end else
+	this->AppendText("\n");
+	this->AppendText("Finished !");
+
+
+
+}
 }
 
-for (unsigned int i=0;i<4096;i++)
-	{
-		test = BufferWrite(v,sizeof a,a);
-	}
-
-memset (a,0,sizeof a);
-
-this->AppendText("Reading 512MB from a FIFO for each blocksize .. :\n");
-
-for (unsigned int i=1;i<=262144;i *= 2)
-	{
-		this->AppendText(i.ToString());
-		this->AppendText(" Bytes : ");
-		tstart = GetTickCount();	// Get begintime
-
-		for (unsigned int j=0;j<((512*1024)/i)*1024;j++)
-		{
-			stat = BufferRead (v, ReadPtr, i, a);
-		}
-		
-		tend = GetTickCount();	// Get end time
-		tdif = tend - tstart; //will now have the time elapsed since the start of the call	(performance measurement
-
-		ReadResults[ReadResultsPtr] = ((double)512/(double)tdif)*1000;
-		converter = ReadResults[ReadResultsPtr];
-		this->AppendText(converter.ToString());
-		this->AppendText(" MB/s\n");
-		ReadResultsPtr++;
-		ReadPtr++;
-	}
-
-results[23]=0;
-ReadResults[23]=0;
-
-BufferRelease(v);
-
-//}	//end else
-this->AppendText("\n");
-this->AppendText("Finished !");
-
-
-
-		 }
 private: System::Void button2_Click(System::Object^  sender, System::EventArgs^  e) {
 
 			 backgroundWorker1->RunWorkerAsync();

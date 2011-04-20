@@ -12,7 +12,7 @@
 #define MAXSIZE 512	// In MegaBytes
 #define MINSIZE 16	// In Bytes
 
-#define MAXPTRS 32
+#define MAXPTRS 128
 
 #define BLOCKSIZE_READ 8	//In Bytes (values >= BLOCKSIZE_READ will be written byte/Byte
 #define BLOCKSIZE_WRITE 8	//In Bytes (values >= BLOCKSIZE_WRITE will be written byte/Byte
@@ -94,7 +94,7 @@ unsigned int Buffers::QFree(unsigned int NrPtr)
 	if (NrPtr >= this->NrPtrs) return 0;	// Invalid pointer
 
 	EnterCriticalSection(&Crit1);
-	k= (this->size - this->QLoad[NrPtr]); // k is needed to give the function a chance to release the lock first before returning
+	k = (this->size - this->QLoad[NrPtr]); // k is needed to give the function a chance to release the lock first before returning
 	LeaveCriticalSection(&Crit1);
 	
 	return k;
@@ -161,12 +161,12 @@ int Buffers::Read (unsigned int NrPtr, unsigned int r, unsigned char * d)
 
 	EnterCriticalSection(&Crit1);
 
-	if (!this->QLoad)
+	if (!this->QLoad[NrPtr])
 		{
 			LeaveCriticalSection(&Crit1);
 			return -3;	//Queue is empty
 		}
-	if (r > (this->QLoad[NrPtr]))
+	if (r > this->QLoad[NrPtr])
 		{
 			LeaveCriticalSection(&Crit1);
 			return -4;	//Requested amount of bytes is higher than nr of available bytes

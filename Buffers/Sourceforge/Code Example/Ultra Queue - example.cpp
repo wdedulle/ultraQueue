@@ -1,4 +1,4 @@
-Ultraqueue 0.6 Example :
+Ultraqueue 0.7.1 Example :
 
 #include "Buffers.h"
 
@@ -95,5 +95,5 @@ int main ()
 	BufferRelease(Buffer2); // Delete Buffer2
 
 
-Return 0;
+return 0;
 }
