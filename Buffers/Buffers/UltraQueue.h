@@ -117,7 +117,7 @@ BUFFERS_API double CALLING_CONVENTION BufferSpaceUsed_Percentage (unsigned int b
 	// Return : status
 	//		- Amount of used space (in bytes)
 
-BUFFERS_API bool CALLING_CONVENTION BufferGetOverflow_Wait (unsigned int buffer_nr);
+BUFFERS_API unsigned int CALLING_CONVENTION BufferGetOverflow_Wait (unsigned int buffer_nr);
 	//Flag to indicate :
 	//		FIFO : Data was lost because the queue was full for one of the ReadChannels
 	//		RING : A write action to the queue failed because it lacked space on one of the ReadChannels
@@ -125,7 +125,7 @@ BUFFERS_API bool CALLING_CONVENTION BufferGetOverflow_Wait (unsigned int buffer_
 	//		- Buffer ID
 	// Return : status
 	//		- 0 : No OverFlow / Wait occured
-	//		- 1 : Overflow / Wait occured
+	//		- !0 : Overflow / Wait occured
 
 BUFFERS_API void CALLING_CONVENTION BufferClearOverflow_Wait (unsigned int buffer_nr);
 	//Reset the Overflow_Wait flag

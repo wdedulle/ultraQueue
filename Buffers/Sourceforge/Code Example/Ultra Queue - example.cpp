@@ -1,4 +1,4 @@
-Ultraqueue 0.7.1 Example :
+Ultraqueue 0.7.2 Example :
 
 #include "Buffers.h"
 
@@ -17,7 +17,7 @@ int main ()
 	unsigned int BytesAvailable =0;
 
 	double UsedSpace = 0;
-	bool Flag = false;
+	unsigned int Flag = 0;
 
 	//Creating Buffers
 	Buffer1 = BufferCreate (1*1048576,FIFO, 2, &GetErrorQ1);	// Create a queue :  1MB in size , FIFO , 2 ReadChannels (Channels : 0 & 1) , Error

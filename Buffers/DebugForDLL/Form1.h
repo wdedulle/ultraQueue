@@ -58,6 +58,7 @@ namespace DebugForDLL {
 	private: System::Windows::Forms::Button^  button2;
 	private: System::Windows::Forms::Button^  StartThreaded;
 	private: System::ComponentModel::BackgroundWorker^  backgroundWorker2;
+	private: System::Windows::Forms::Button^  button1;
 
 
 
@@ -83,6 +84,7 @@ namespace DebugForDLL {
 			this->button2 = (gcnew System::Windows::Forms::Button());
 			this->StartThreaded = (gcnew System::Windows::Forms::Button());
 			this->backgroundWorker2 = (gcnew System::ComponentModel::BackgroundWorker());
+			this->button1 = (gcnew System::Windows::Forms::Button());
 			this->SuspendLayout();
 			// 
 			// textBox1
@@ -124,11 +126,22 @@ namespace DebugForDLL {
 			// 
 			this->backgroundWorker2->DoWork += gcnew System::ComponentModel::DoWorkEventHandler(this, &Form1::backgroundWorker2_DoWork);
 			// 
+			// button1
+			// 
+			this->button1->Location = System::Drawing::Point(239, 10);
+			this->button1->Name = L"button1";
+			this->button1->Size = System::Drawing::Size(75, 23);
+			this->button1->TabIndex = 8;
+			this->button1->Text = L"button1";
+			this->button1->UseVisualStyleBackColor = true;
+			this->button1->Click += gcnew System::EventHandler(this, &Form1::button1_Click);
+			// 
 			// Form1
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 			this->ClientSize = System::Drawing::Size(753, 770);
+			this->Controls->Add(this->button1);
 			this->Controls->Add(this->StartThreaded);
 			this->Controls->Add(this->button2);
 			this->Controls->Add(this->textBox1);
@@ -489,6 +502,23 @@ private: System::Void backgroundWorker2_DoWork(System::Object^  sender, System::
 
 
 
+		 }
+private: System::Void button1_Click(System::Object^  sender, System::EventArgs^  e)
+		 {
+
+			 unsigned int v;
+			 int stat = 0;
+
+			 unsigned char a[256];
+
+			 bool test = false;
+
+			 v = BufferCreate (20,FIFO, 1, &stat);
+
+			 stat = BufferWrite (v, 16, a);
+				stat = BufferRead (v, 0, 16, a);
+			 stat = BufferWrite (v, 20, a);
+				test = BufferGetOverflow_Wait (v);
 		 }
 };
 }

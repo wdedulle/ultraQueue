@@ -1,6 +1,15 @@
-Kindly rate this project to help me further improve this project !
-Feel free to post a ticket
+Kindly rate this project to help me further improve it !
+Feel free to post a ticket in case of a bug or feature request :)
 
+
+0.7.2
+-----
+	- Critical Fix : Queue data could get corrupt after lots of reading/writing.
+	- Improved : ~13% speed gain on small writes when using a lot of channels.
+	- Improved : ~15% speed gain when writing data to a full FIFO queue.
+	- Improved : ~60% speed gain when Flushing all ReadChannels at once (using "-1" in the command)
+	- Changed : BufferGetOverflow_Wait(BufferNr) returns an Unsigned Int now i.s.o. a Bool. (compatibility with ANSI C)
+	- Updated : Write Benchmarks & Code Example
 
 0.7.1
 -----

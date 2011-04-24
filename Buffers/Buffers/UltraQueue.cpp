@@ -32,7 +32,7 @@ public:
 	int Write (unsigned int w, unsigned char * d);
 	unsigned int GetBuffertype();
 	unsigned int CQsize();
-	bool StatusGetOverFlow();
+	unsigned int StatusGetOverFlow();
 	void StatusClearOverFlow();
 	bool QueueError;
 
@@ -45,7 +45,7 @@ private:
 	unsigned int WrPtr;
 	unsigned int BufferType;
 	unsigned int NrPtrs;
-	volatile bool OverFlow;
+	volatile unsigned int OverFlow;
 	CRITICAL_SECTION Crit1;
 };
 
@@ -60,7 +60,7 @@ Buffers::Buffers(unsigned int _NrPtrs, unsigned int _size, unsigned int _BufferT
 	this->NrPtrs = _NrPtrs;
 	this->OverFlow = false;
 	
-	for (unsigned int i=0;i<_NrPtrs;i++)
+	for (unsigned int i=0;i<_NrPtrs;++i)
 		{
 			this->RdPtr[i] = 0;
 			this->QLoad[i] = 0;
@@ -120,9 +120,12 @@ void Buffers::Flush(int NrPtr)
 	EnterCriticalSection(&Crit1);
 	if (NrPtr == -1)	// If -1 is received, reset all pointers
 		{
-			for (unsigned int i=0;i<this->NrPtrs;i++)
+			unsigned int CacheCopy_NrPtrs = this->NrPtrs;
+			unsigned int CacheCopy_WrPtr = this->WrPtr;
+
+			for (unsigned int i=0;i<CacheCopy_NrPtrs;++i)
 			{
-				this->RdPtr[i] = this->WrPtr;
+				this->RdPtr[i] = CacheCopy_WrPtr;
 				this->QLoad[i] = 0;
 			}
 		}
@@ -190,14 +193,15 @@ int Buffers::Read (unsigned int NrPtr, unsigned int r, unsigned char * d)
 			unsigned int Small = r;
 
 			if (Small > BLOCKSIZE_READ && (Small-block) > BLOCKSIZE_READ) Small = block+1;
-
-			for (register unsigned int i=0;i<Small;i++) // Store counter in Cache if possible
+			//If the reason for BbB is "Close at Wrap", read just behind the wrap & re-evaluate if we can blockread again
+			
+			for (register unsigned int i=0;i<Small;++i) // Store counter in Cache if possible
 			{
-				temp_RdPtr++;
-				if (temp_RdPtr >= temp_size) temp_RdPtr = 0;	// Make it circular
+				++temp_RdPtr;
+				if (temp_RdPtr == temp_size) temp_RdPtr = 0;	// Make it circular
 				d[i+offset] = this->CQ[temp_RdPtr];
-				temp_QLoad--;
-				r--;
+				--temp_QLoad;
+				--r;
 			}
 		}
 		else	// Block Read		Max block read = size of requested bytes (if possible)
@@ -232,7 +236,7 @@ int Buffers::Write (unsigned int w, unsigned char * d)
 	unsigned int temp_QLoad[MAXPTRS];
 	unsigned int temp_RdPtr[MAXPTRS];
 
-	for (unsigned int b=0;b<this->NrPtrs;b++)
+	for (unsigned int b=0;b<temp_NrPtrs;++b)
 	{
 		temp_QLoad[b] = this->QLoad[b];
 		temp_RdPtr[b] = this->RdPtr[b];
@@ -242,17 +246,17 @@ int Buffers::Write (unsigned int w, unsigned char * d)
 
 	if (this->BufferType == RING)	//ringbuffer
 	{
-		for (unsigned int i=0;i<temp_NrPtrs;i++)	//check space requirements
+		for (unsigned int i=0;i<temp_NrPtrs;++i)	//check space requirements
 		{
 			if(temp_QLoad[i] >= temp_size)
 				{
-					this->OverFlow = true;	// Set flag to inform that a write action could not be performed
+					this->OverFlow = 1;	// Set flag to inform that a write action could not be performed
 					LeaveCriticalSection(&Crit1);
 					return -2;	// One of the Ring buffers is completely full
 				}
 			if (w > (temp_size - temp_QLoad[i]))
 				{
-					this->OverFlow = true;	// Set flag to inform that a write action could not be performed
+					this->OverFlow = 1;	// Set flag to inform that a write action could not be performed
 					LeaveCriticalSection(&Crit1);
 					return -3;	// One of the Ring buffers lacks space to write all requested bytes
 				}
@@ -270,14 +274,14 @@ int Buffers::Write (unsigned int w, unsigned char * d)
 			{	// When not much data to write, or we're close at the wrap point, write byte-per-byte
 				unsigned int Small = w;
 
-				if (Small > BLOCKSIZE_READ && (Small-block) > BLOCKSIZE_WRITE) Small = block+1;
+				if (Small > BLOCKSIZE_WRITE && (Small-block) > BLOCKSIZE_WRITE) Small = block+1;
 
-				for (register unsigned int i=0;i<Small;i++)	// Store counter in Cache if possible
+				for (register unsigned int i=0;i<Small;++i)	// Store counter in register if possible
 				{
-					temp_WrPtr++;
+					++temp_WrPtr;
 					if (temp_WrPtr == temp_size) temp_WrPtr = 0;	// inc + compare&set is 40% faster than modulus trick
 					this->CQ[temp_WrPtr] = d[i+offset];
-					w--;
+					--w; //Decrease amount to write
 				}
 			}
 			else	// Block Write		Max block write = size of requested bytes (if possible)
@@ -290,9 +294,10 @@ int Buffers::Write (unsigned int w, unsigned char * d)
 			}
 		}
 		//Update Loads
-		for (unsigned int q=0;q<temp_NrPtrs;q++)
+		w2 -= w;
+		for (unsigned int q=0;q<temp_NrPtrs;++q)
 		{
-			temp_QLoad[q] += (w2-w);	//Update loads
+			temp_QLoad[q] += w2;	//Update loads
 		}
 
 	}
@@ -312,14 +317,14 @@ int Buffers::Write (unsigned int w, unsigned char * d)
 				{	// When not much data to write, or we're close at the wrap point, write byte-per-byte
 					unsigned int Small = w;
 
-					if (Small > BLOCKSIZE_READ && (Small-block) > BLOCKSIZE_WRITE) Small = block+1;
+					if (Small > BLOCKSIZE_WRITE && (Small-block) > BLOCKSIZE_WRITE) Small = block+1;
 
-					for (register unsigned int i=0;i<Small;i++)	// Store counter in Cache if possible
+					for (register unsigned int i=0;i<Small;++i)	// Store counter in register if possible
 					{
-						temp_WrPtr++;
+						++temp_WrPtr;
 						if (temp_WrPtr == temp_size) temp_WrPtr = 0;	// inc + compare&set is 40% faster than modulus trick
 						this->CQ[temp_WrPtr] = d[i+offset];
-						w--;
+						--w;
 					}
 				}
 				else	// Block Write		Max block write = size of requested bytes (if possible)
@@ -331,28 +336,30 @@ int Buffers::Write (unsigned int w, unsigned char * d)
 					offset = block;	// offset = position to start for the Wrap write
 				}
 			}
+			
 			//Update Loads & pointers
-			for (unsigned int q=0;q<temp_NrPtrs;q++)
-			{
-				temp_QLoad[q] += (w2-w);	//Update loads
+			w2 -= w;	//Update w2 to actual written amount
+			unsigned int CompSize = (temp_size - 1);
+			unsigned int CacheCopy_OverFlow = 0;
 
-				if (temp_QLoad[q] >= temp_size)	// Load is larger than queue size
+			for (unsigned int q=0;q<temp_NrPtrs;++q)
+			{
+				temp_QLoad[q] += w2;	//Update loads
+
+				if (temp_QLoad[q] > temp_size)	// New Load is larger/equal then/to queue size
 				{
 					temp_QLoad[q] = temp_size; // Max. possible amount is queue size
 					temp_RdPtr[q] = temp_WrPtr; // Pointers are equal when buffer is full
-					this->OverFlow = true;	// Set flag to indicate that we lost data
-				}
-				else	// Load is within Queue limits
-				{
-					temp_RdPtr[q] = temp_WrPtr - temp_QLoad[q];
-					if (temp_RdPtr[q] > temp_size) temp_RdPtr[q] = temp_size - (temp_size - temp_RdPtr[q]);
+					CacheCopy_OverFlow = 1; //If new amount of data is larger then the queue, we lost data ..
 				}
 			}
+
+			this->OverFlow = CacheCopy_OverFlow;
 	}
 
 	// Write back changed value's
 	this->WrPtr = temp_WrPtr;	
-	for (unsigned int c=0;c<this->NrPtrs;c++)
+	for (unsigned int c=0;c<temp_NrPtrs;++c)
 	{
 		this->QLoad[c] = temp_QLoad[c];
 		this->RdPtr[c] = temp_RdPtr[c];
@@ -373,9 +380,9 @@ unsigned int Buffers::CQsize()
 	return this->size;
 }
 
-bool Buffers::StatusGetOverFlow()
+unsigned int Buffers::StatusGetOverFlow()
 {
-	bool a = false;
+	unsigned int a = 0;
 	
 	EnterCriticalSection(&Crit1);
 		a = this->OverFlow;
@@ -387,7 +394,7 @@ bool Buffers::StatusGetOverFlow()
 void Buffers::StatusClearOverFlow()
 {
 	EnterCriticalSection(&Crit1);
-		this->OverFlow = false;
+		this->OverFlow = 0;
 	LeaveCriticalSection(&Crit1);
 }
 
@@ -451,7 +458,7 @@ int CALLING_CONVENTION BufferWrite (unsigned int buffer_nr, unsigned int NrOfByt
 	return incoming->Write(NrOfBytes,Data);
 }
 
-BUFFERS_API void CALLING_CONVENTION BufferFlush (unsigned int buffer_nr, int ReadChannel)
+void CALLING_CONVENTION BufferFlush (unsigned int buffer_nr, int ReadChannel)
 {
 	Buffers * incoming = (Buffers*) buffer_nr;
 	incoming->Flush(ReadChannel);
@@ -492,7 +499,7 @@ double CALLING_CONVENTION BufferSpaceUsed_Percentage (unsigned int buffer_nr, un
 	return  k;
 }
 
-bool CALLING_CONVENTION BufferGetOverflow_Wait (unsigned int buffer_nr)
+unsigned int CALLING_CONVENTION BufferGetOverflow_Wait (unsigned int buffer_nr)
 {
 	Buffers * incoming = (Buffers*) buffer_nr;
 	return incoming->StatusGetOverFlow();
