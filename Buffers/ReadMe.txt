@@ -2,6 +2,19 @@ Kindly rate this project to help me further improve it !
 Feel free to post a ticket in case of a bug or feature request :)
 
 
+0.7.3
+-----
+	- Improved : Queue access functions dynamically select the fastest possible method for any situation now.
+	- Improved : Fully optimized cache performance.
+	- Improved : Read/Write performance fully optimized on assembly level. (See benchmarks for details)
+	- Improved : Vectorized Load & Pointer handling, improving queue performance when using High Readpointer count.
+	- Improved : ReWritten CPU info functions in Assembly now for extremely fast Queue creation & control
+	- Improved : Seriously improved pointer aliasing, false sharing & boundary alignments for optimal caching & SSE2 performance.
+	- Improved : Read/Writes smaller than 4kB are now handled by Agner Fog's "Asmlib" memcpy functions.
+		     (Special Thanks to Agner Fog for the amazing optimization manuals & libs !! - please visit www.agner.org)
+	- Updated : All benchmarks
+	- Added : Comparison Benchmarks based on Queue sizes fitting in RAM, L2 & L1 cache.
+
 0.7.2
 -----
 	- Critical Fix : Queue data could get corrupt after lots of reading/writing.

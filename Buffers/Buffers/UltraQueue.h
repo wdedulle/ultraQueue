@@ -132,6 +132,7 @@ BUFFERS_API void CALLING_CONVENTION BufferClearOverflow_Wait (unsigned int buffe
 	// Parameters :
 	//		- Buffer ID
 
+
 #ifdef __cplusplus
 }
 #endif

@@ -52,7 +52,4 @@
       <Filter>Resource Files</Filter>
     </EmbeddedResource>
   </ItemGroup>
-  <ItemGroup>
-    <Library Include="..\Debug\UltraQueue.lib" />
-  </ItemGroup>
 </Project>

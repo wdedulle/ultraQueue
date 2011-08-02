@@ -1,4 +1,5 @@
 ﻿  stdafx.cpp
+  CPU_Info.cpp
   UltraQueue.cpp
   dllmain.cpp
      Creating library C:\Users\xback\Documents\Visual Studio 2010\Projects\Buffers\Release\UltraQueue.lib and object C:\Users\xback\Documents\Visual Studio 2010\Projects\Buffers\Release\UltraQueue.exp

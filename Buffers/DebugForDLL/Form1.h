@@ -59,6 +59,8 @@ namespace DebugForDLL {
 	private: System::Windows::Forms::Button^  StartThreaded;
 	private: System::ComponentModel::BackgroundWorker^  backgroundWorker2;
 	private: System::Windows::Forms::Button^  button1;
+	private: System::Windows::Forms::CheckBox^  checkBox1;
+	private: System::Windows::Forms::Button^  button3;
 
 
 
@@ -85,6 +87,8 @@ namespace DebugForDLL {
 			this->StartThreaded = (gcnew System::Windows::Forms::Button());
 			this->backgroundWorker2 = (gcnew System::ComponentModel::BackgroundWorker());
 			this->button1 = (gcnew System::Windows::Forms::Button());
+			this->checkBox1 = (gcnew System::Windows::Forms::CheckBox());
+			this->button3 = (gcnew System::Windows::Forms::Button());
 			this->SuspendLayout();
 			// 
 			// textBox1
@@ -136,11 +140,33 @@ namespace DebugForDLL {
 			this->button1->UseVisualStyleBackColor = true;
 			this->button1->Click += gcnew System::EventHandler(this, &Form1::button1_Click);
 			// 
+			// checkBox1
+			// 
+			this->checkBox1->AutoSize = true;
+			this->checkBox1->Location = System::Drawing::Point(336, 17);
+			this->checkBox1->Name = L"checkBox1";
+			this->checkBox1->Size = System::Drawing::Size(84, 17);
+			this->checkBox1->TabIndex = 9;
+			this->checkBox1->Text = L"Share buffer";
+			this->checkBox1->UseVisualStyleBackColor = true;
+			// 
+			// button3
+			// 
+			this->button3->Location = System::Drawing::Point(524, 11);
+			this->button3->Name = L"button3";
+			this->button3->Size = System::Drawing::Size(75, 23);
+			this->button3->TabIndex = 10;
+			this->button3->Text = L"SSE test";
+			this->button3->UseVisualStyleBackColor = true;
+			this->button3->Click += gcnew System::EventHandler(this, &Form1::button3_Click);
+			// 
 			// Form1
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 			this->ClientSize = System::Drawing::Size(753, 770);
+			this->Controls->Add(this->button3);
+			this->Controls->Add(this->checkBox1);
 			this->Controls->Add(this->button1);
 			this->Controls->Add(this->StartThreaded);
 			this->Controls->Add(this->button2);
@@ -201,36 +227,38 @@ private: System::Void backgroundWorker1_DoWork(System::Object^  sender, System::
 		int test=0;
 		DWORD tstart, tend, tdif;
 
-		unsigned int writesizesmall=256;
+		unsigned const int writesizesmall=256;
 		unsigned int start_blocksizesmall=1;
 		unsigned int stop_blocksizesmall=32;
 
-		unsigned int writesizelarge=16384;
+		unsigned const int writesizelarge=16384;
 		unsigned int start_blocksizelarge=64;
 		unsigned int stop_blocksizelarge=262144;
-
+		
 		int CreateStatus=0;
 
 bool bd = false;
-unsigned int resultptr =0;
+unsigned int resultptr=0;
 unsigned int converter=0;
 
-bool dowrite = true;
+bool dowrite = false;
 bool dosmall = true;
 bool dolarge = true;
-unsigned int BenchNrOfReadChan = 32;
+unsigned int BenchNrOfReadChan = 1;
 
-bool doread = false;
+bool doread = true;
 
 this->SetText("");
-this->SetText("WRITE benchmarks\n");
-this->AppendText("\n");
+this->SetText("WRITE benchmarks\r\n");
+this->AppendText("\r\n");
 
 if (dowrite)
 {
 	if (dosmall)
 	{
-		v = BufferCreate(64*1048576,FIFO,BenchNrOfReadChan,&CreateStatus);	// function(size,buffertype,ReadChannels)
+		//v = BufferCreate(16*1048576,FIFO,BenchNrOfReadChan,&CreateStatus);	// function(size,buffertype,ReadChannels)
+		v = BufferCreate(16384,FIFO,BenchNrOfReadChan,&CreateStatus);	// function(size,buffertype,ReadChannels)
+		
 
 		//if (!v)
 		//{
@@ -239,8 +267,8 @@ if (dowrite)
 		//}
 		this->AppendText("Writing ");
 		this->AppendText(writesizesmall.ToString());
-		this->AppendText("MB to a 64MB FIFO for each blocksize");
-		this->AppendText("\n");
+		this->AppendText("MB to a 16MB FIFO for each blocksize");
+		this->AppendText("\r\n");
 	
 		for (unsigned int loops=start_blocksizesmall;loops<=stop_blocksizesmall;loops *= 2)
 		{
@@ -248,7 +276,7 @@ if (dowrite)
 			this->AppendText(" Bytes : ");
 				tstart = GetTickCount();	// Get begintime
 
-				for (unsigned int i=0;i<(1048576*writesizesmall)/loops;++i)
+				for (unsigned int i=(1048576*writesizesmall)/loops;i;--i)
 				{
 					test = BufferWrite(v,loops,a);
 				}
@@ -260,8 +288,8 @@ if (dowrite)
 				results[resultptr] = ((double)writesizesmall/(double)tdif)*1000;
 				converter = results[resultptr];
 				this->AppendText(converter.ToString());
-				this->AppendText(" MB/s\n");
-				resultptr++;
+				this->AppendText(" MB/s\r\n");
+				++resultptr;
 
 				BufferFlush(v,-1);
 		}
@@ -271,18 +299,20 @@ if (dowrite)
 
 	if (dolarge)
 	{
-		v = BufferCreate(512*1048576,FIFO,BenchNrOfReadChan,&CreateStatus);	// function(size,buffertype,ReadChannels,status)
+		//v = BufferCreate(64*1048576,FIFO,BenchNrOfReadChan,&CreateStatus);	// function(size,buffertype,ReadChannels,status)
+		v = BufferCreate(16384,FIFO,BenchNrOfReadChan,&CreateStatus);	// function(size,buffertype,ReadChannels,status)
+		
 
 		//if (!v)
 		//{
 		//	this->AppendText("Not enough memory could be allocated to start the Large block tests");
 		//	break;
 		//}
-		this->AppendText("\n");
+		this->AppendText("\r\n");
 		this->AppendText("Writing ");
 		this->AppendText((writesizelarge/1024).ToString());
-		this->AppendText("GB to a 512MB FIFO for each blocksize");
-		this->AppendText("\n");
+		this->AppendText("GB to a 64MB FIFO for each blocksize");
+		this->AppendText("\r\n");
 
 		for (unsigned int loops=start_blocksizelarge;loops<=stop_blocksizelarge;loops *= 2)
 		{
@@ -290,7 +320,7 @@ if (dowrite)
 			this->AppendText(" Bytes : ");
 				tstart = GetTickCount();	// Get begintime
 
-				for (unsigned int i=0;i<((1024*writesizelarge)/loops)*1024;++i)
+				for (unsigned int i=((1024*writesizelarge)/loops)*1024;i;--i)
 				{
 					test = BufferWrite(v,loops,a);
 				}
@@ -302,7 +332,7 @@ if (dowrite)
 				results[resultptr] = ((double)writesizelarge/(double)tdif)*1000;
 				converter = results[resultptr];
 				this->AppendText(converter.ToString());
-				this->AppendText(" MB/s\n");
+				this->AppendText(" MB/s\r\n");
 				resultptr++;
 
 				BufferFlush(v,-1);
@@ -319,17 +349,17 @@ if (dowrite)
 
 if (doread)
 {
-	this->AppendText(" \n");
-	this->AppendText(" \n");
-	this->AppendText("READ benchmarks\n");
-	this->AppendText(" \n");
+	this->AppendText(" \r\n");
+	this->AppendText(" \r\n");
+	this->AppendText("READ benchmarks\r\n");
+	this->AppendText(" \r\n");
 
 	double ReadResults[24] = {0};
 	unsigned int ReadResultsPtr=0;
 	unsigned int ReadPtr=0;
 	int stat=0;
 
-	v = BufferCreate(512*1048576,FIFO,32,&CreateStatus);	// function(size,buffertype,ReadChannels)
+	v = BufferCreate(1024*1048576,FIFO,32,&CreateStatus);	// function(size,buffertype,ReadChannels)
 
 	//if (!v) break;
 
@@ -350,7 +380,7 @@ if (doread)
 
 	memset (a,0,sizeof a);
 
-	this->AppendText("Reading 512MB from a FIFO for each blocksize .. :\n");
+	this->AppendText("Reading 1024MB from a FIFO for each blocksize .. :\r\n");
 
 	for (unsigned int i=1;i<=262144;i *= 2)
 		{
@@ -358,7 +388,7 @@ if (doread)
 			this->AppendText(" Bytes : ");
 			tstart = GetTickCount();	// Get begintime
 
-			for (unsigned int j=0;j<((512*1024)/i)*1024;++j)
+			for (unsigned int j=0;j<((1024*1024)/i)*1024;++j)
 			{
 				stat = BufferRead (v, ReadPtr, i, a);
 			}
@@ -366,12 +396,12 @@ if (doread)
 			tend = GetTickCount();	// Get end time
 			tdif = tend - tstart; //will now have the time elapsed since the start of the call	(performance measurement
 
-			ReadResults[ReadResultsPtr] = ((double)512/(double)tdif)*1000;
+			ReadResults[ReadResultsPtr] = ((double)1024/(double)tdif)*1000;
 			converter = ReadResults[ReadResultsPtr];
 			this->AppendText(converter.ToString());
-			this->AppendText(" MB/s\n");
-			ReadResultsPtr++;
-			ReadPtr++;
+			this->AppendText(" MB/s\r\n");
+			++ReadResultsPtr;
+			++ReadPtr;
 		}
 
 	results[23]=0;
@@ -380,7 +410,7 @@ if (doread)
 	BufferRelease(v);
 
 	//}	//end else
-	this->AppendText("\n");
+	this->AppendText("\r\n");
 	this->AppendText("Finished !");
 
 
@@ -399,26 +429,39 @@ ref class ThreadBench
 public:
    static void DoWork()
    {
+	unsigned char a[16384];
 	unsigned int buffernr=0;
-	unsigned char a[262144];
 	int test=0;
 	int CreateStatus=0;
 
 	
-	if (!buffernrshared) buffernr = BufferCreate(32*1048576,FIFO,1,&CreateStatus);	// function(size,buffertype,ReadChannels)
+	//if (!buffernrshared) buffernr = BufferCreate(32*1048576,FIFO,1,&CreateStatus);	// function(size,buffertype,ReadChannels)
+	if (!buffernrshared) buffernr = BufferCreate(1048576*64,FIFO,128,&CreateStatus);	// function(size,buffertype,ReadChannels)
 
 	if (buffernr)
 	{
-		for (unsigned int i=0;i<65536;i++)
+		for (unsigned int i=4096;i;--i)
 		{
 		test = BufferWrite(buffernr,sizeof a,a);
 		}
+
+		for (unsigned int u=0;u<128;++u)
+		{
+			for (unsigned int i=4096;i;--i)
+			{
+			test = BufferRead(buffernr, u, sizeof a, a);
+			}
+		}
+
 	}
 
 	else
 	{
-		for (unsigned int i=0;i<65536;i++)
+		for (unsigned int i=0;i<(1048576);i++)
 		{
+			test = BufferWrite(buffernrshared,sizeof a,a);
+			test = BufferWrite(buffernrshared,sizeof a,a);
+			test = BufferWrite(buffernrshared,sizeof a,a);
 			test = BufferWrite(buffernrshared,sizeof a,a);
 		}
 	}
@@ -443,15 +486,20 @@ private: System::Void backgroundWorker2_DoWork(System::Object^  sender, System::
 		unsigned int convert;
 		int CreateStatus=0;
 
+		buffernrshared = 0;
+
 		tstart = GetTickCount();
 							
 		this->SetText("");
 		this->AppendText("Starting benchmark with 8 Threads.");
-		this->AppendText("\n");
-		this->AppendText("Each Thread writes 16GB to it's own 32MB FIFO buffer in blocks of 256kB");
-		this->AppendText("\n");
+		this->AppendText("\r\n");
+		this->AppendText("Each Thread writes 64GB to it's own 256kB FIFO buffer in blocks of 16kB");
+		this->AppendText("\r\n");
 
-		buffernrshared = BufferCreate(128*1048576,FIFO,1,&CreateStatus);	// function(size,buffertype,ReadChannels)
+		if (checkBox1->Checked == true)
+		{
+			buffernrshared = BufferCreate(1048576/4,FIFO,1,&CreateStatus);	// function(size,buffertype,ReadChannels)
+		}
 
 		ThreadStart^ myThreadDelegate = gcnew ThreadStart( &ThreadBench::DoWork );
 		
@@ -463,7 +511,7 @@ private: System::Void backgroundWorker2_DoWork(System::Object^  sender, System::
 		Thread^ Thread6 = gcnew Thread( myThreadDelegate );
 		Thread^ Thread7 = gcnew Thread( myThreadDelegate );
 		Thread^ Thread8 = gcnew Thread( myThreadDelegate );
-
+		
 		Thread1->Start();	// Start all Threads
 		Thread2->Start();
 		Thread3->Start();
@@ -485,17 +533,17 @@ private: System::Void backgroundWorker2_DoWork(System::Object^  sender, System::
 		tend = GetTickCount();	// Get end time
 		tdif = tend - tstart; //will now have the time elapsed since the start of the call	(performance measurement
 
-		result = ((double)131072/(double)tdif)*1000;
+		result = ((double)(131072*4)/(double)tdif)*1000;
 
 		convert = result;
 				
 		this->AppendText("All Threads Finished");
-		this->AppendText(" \n");
-		this->AppendText(" \n");
+		this->AppendText(" \r\n");
+		this->AppendText(" \r\n");
 		this->AppendText("Total Write Speed : ");
 
 		this->AppendText(convert.ToString());
-		this->AppendText(" MB/s\n");
+		this->AppendText(" MB/s\r\n");
 
 		if (buffernrshared) BufferRelease(buffernrshared);	// function(size,buffertype,ReadChannels)
 
@@ -519,6 +567,10 @@ private: System::Void button1_Click(System::Object^  sender, System::EventArgs^ 
 				stat = BufferRead (v, 0, 16, a);
 			 stat = BufferWrite (v, 20, a);
 				test = BufferGetOverflow_Wait (v);
+		 }
+private: System::Void button3_Click(System::Object^  sender, System::EventArgs^  e) {
+
+			 
 		 }
 };
 }

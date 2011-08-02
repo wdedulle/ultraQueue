@@ -28,6 +28,12 @@
     <ClInclude Include="UltraQueue.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="CPU_Info.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\asmlib\asmlib.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -39,5 +45,13 @@
     <ClCompile Include="UltraQueue.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="CPU_Info.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="..\asmlib\alibcof32.lib">
+      <Filter>Resource Files</Filter>
+    </Library>
   </ItemGroup>
 </Project>

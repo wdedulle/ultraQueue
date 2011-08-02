@@ -1,10 +1,10 @@
 ﻿  stdafx.cpp
   AssemblyInfo.cpp
   DebugForDLL.cpp
-c:\users\xback\documents\visual studio 2010\projects\buffers\debugfordll\Form1.h(261): warning C4244: '=' : conversion from 'double' to 'unsigned int', possible loss of data
-c:\users\xback\documents\visual studio 2010\projects\buffers\debugfordll\Form1.h(303): warning C4244: '=' : conversion from 'double' to 'unsigned int', possible loss of data
-c:\users\xback\documents\visual studio 2010\projects\buffers\debugfordll\Form1.h(370): warning C4244: '=' : conversion from 'double' to 'unsigned int', possible loss of data
-c:\users\xback\documents\visual studio 2010\projects\buffers\debugfordll\Form1.h(490): warning C4244: '=' : conversion from 'double' to 'unsigned int', possible loss of data
-c:\users\xback\documents\visual studio 2010\projects\buffers\debugfordll\Form1.h(521): warning C4800: 'unsigned int' : forcing value to bool 'true' or 'false' (performance warning)
+c:\users\xback\documents\visual studio 2010\projects\buffers\debugfordll\Form1.h(289): warning C4244: '=' : conversion from 'double' to 'unsigned int', possible loss of data
+c:\users\xback\documents\visual studio 2010\projects\buffers\debugfordll\Form1.h(333): warning C4244: '=' : conversion from 'double' to 'unsigned int', possible loss of data
+c:\users\xback\documents\visual studio 2010\projects\buffers\debugfordll\Form1.h(400): warning C4244: '=' : conversion from 'double' to 'unsigned int', possible loss of data
+c:\users\xback\documents\visual studio 2010\projects\buffers\debugfordll\Form1.h(538): warning C4244: '=' : conversion from 'double' to 'unsigned int', possible loss of data
+c:\users\xback\documents\visual studio 2010\projects\buffers\debugfordll\Form1.h(569): warning C4800: 'unsigned int' : forcing value to bool 'true' or 'false' (performance warning)
   Generating Code...
   DebugForDLL.vcxproj -> C:\Users\xback\Documents\Visual Studio 2010\Projects\Buffers\Debug\UQ Benchmark.exe
